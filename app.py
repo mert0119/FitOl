@@ -1,5 +1,6 @@
 import os
-from flask import Flask, send_from_directory
+import sys
+from flask import Flask, send_from_directory, jsonify
 from flask_login import LoginManager
 from config import Config
 from models import db
@@ -22,6 +23,11 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
+
+    # Health check
+    @app.route('/health')
+    def health():
+        return jsonify(status='ok', routes=[str(r) for r in app.url_map.iter_rules()])
 
     # Service Worker root'tan sunulsun
     @app.route('/sw.js')
@@ -73,7 +79,11 @@ def create_app():
         from models.progress_photo import ProgressPhoto
         from models.reminder import Reminder
 
-        os.makedirs(os.path.join(os.path.dirname(__file__), 'instance'), exist_ok=True)
+        if os.environ.get('RENDER'):
+            # Render'da /tmp kullan
+            pass
+        else:
+            os.makedirs(os.path.join(os.path.dirname(__file__), 'instance'), exist_ok=True)
         db.create_all()
 
     return app
