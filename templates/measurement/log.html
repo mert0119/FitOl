@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Vücut Ölçümleri{% endblock %}
+{% block content %}
+<div class="page-header fade-in">
+    <h1>📏 Vücut Ölçümleri</h1>
+    <p>Vücut ölçümlerini kaydet ve grafikle izle</p>
+</div>
+
+<div style="margin-bottom:20px">
+    <a href="{{ url_for('measurement.chart') }}" class="btn btn-secondary">📈 Grafikleri Gör</a>
+</div>
+
+<!-- Ölçüm Ekleme -->
+<div class="card slide-up" style="margin-bottom:20px">
+    <div class="card-title" style="margin-bottom:16px">➕ Yeni Ölçüm Ekle</div>
+    <form method="POST" action="{{ url_for('measurement.add') }}">
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Tarih</label>
+                <input type="date" name="date" class="form-input"
+                    value="{{ import('datetime').date.today().isoformat() if false else '' }}" id="measDate">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Kilo (kg)</label>
+                <input type="number" name="weight" class="form-input" placeholder="{{ current_user.weight or '75' }}"
+                    step="0.1">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Bel (cm)</label>
+                <input type="number" name="waist" class="form-input" placeholder="80" step="0.1">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Göğüs (cm)</label>
+                <input type="number" name="chest" class="form-input" placeholder="95" step="0.1">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Kol (cm)</label>
+                <input type="number" name="arm" class="form-input" placeholder="35" step="0.1">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Bacak (cm)</label>
+                <input type="number" name="leg" class="form-input" placeholder="55" step="0.1">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Kalça (cm)</label>
+                <input type="number" name="hip" class="form-input" placeholder="95" step="0.1">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Vücut Yağ Oranı (%)</label>
+                <input type="number" name="body_fat" class="form-input" placeholder="20" step="0.1">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Not</label>
+                <input type="text" name="notes" class="form-input" placeholder="İsteğe bağlı">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">✅ Kaydet</button>
+    </form>
+</div>
+
+<!-- Ölçüm Geçmişi -->
+<div class="card slide-up">
+    <div class="card-title" style="margin-bottom:16px">📋 Son Ölçümler</div>
+    {% if measurements %}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Tarih</th>
+                    <th>Kilo</th>
+                    <th>Bel</th>
+                    <th>Göğüs</th>
+                    <th>Kol</th>
+                    <th>Bacak</th>
+                    <th>Yağ %</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in measurements %}
+                <tr>
+                    <td>{{ m.date.strftime('%d/%m/%Y') }}</td>
+                    <td><strong>{{ m.weight or '—' }}</strong></td>
+                    <td>{{ m.waist or '—' }}</td>
+                    <td>{{ m.chest or '—' }}</td>
+                    <td>{{ m.arm or '—' }}</td>
+                    <td>{{ m.leg or '—' }}</td>
+                    <td>{{ m.body_fat or '—' }}</td>
+                    <td><a href="{{ url_for('measurement.delete', id=m.id) }}" class="btn btn-danger btn-sm">🗑️</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">📏</div>
+        <p>Henüz ölçüm kaydı yok</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>document.getElementById('measDate').value = new Date().toISOString().split('T')[0];</script>
+{% endblock %}

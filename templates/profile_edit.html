@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Profil Düzenle{% endblock %}
+{% block content %}
+<div class="page-header fade-in">
+    <h1>Profili Düzenle</h1>
+    <p>Bilgilerini güncelleyerek daha doğru sonuçlar al</p>
+</div>
+
+<div class="card slide-up">
+    <form method="POST" enctype="multipart/form-data">
+        <!-- Profil Fotoğrafı -->
+        <div class="form-group" style="margin-bottom:20px">
+            <label class="form-label">📸 Profil Fotoğrafı</label>
+            <div style="display:flex;align-items:center;gap:16px">
+                {% if current_user.profile_photo %}
+                <img src="{{ url_for('static', filename=current_user.profile_photo) }}"
+                    style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--accent-green)">
+                {% else %}
+                <div
+                    style="width:64px;height:64px;border-radius:50%;background:var(--card-bg);display:flex;align-items:center;justify-content:center;font-size:28px;border:2px solid var(--border)">
+                    👤</div>
+                {% endif %}
+                <input type="file" name="profile_photo" class="form-input" accept="image/*" style="flex:1">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Ad</label>
+                <input type="text" name="first_name" class="form-input" value="{{ current_user.first_name or '' }}"
+                    placeholder="Adınız">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Soyad</label>
+                <input type="text" name="last_name" class="form-input" value="{{ current_user.last_name or '' }}"
+                    placeholder="Soyadınız">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Yaş</label>
+                <input type="number" name="age" class="form-input" value="{{ current_user.age or '' }}" placeholder="25"
+                    min="10" max="120">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Cinsiyet</label>
+                <select name="gender" class="form-select">
+                    <option value="erkek" {{ 'selected' if current_user.gender=='erkek' }}>Erkek</option>
+                    <option value="kadin" {{ 'selected' if current_user.gender=='kadin' }}>Kadın</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Boy (cm)</label>
+                <input type="number" name="height" class="form-input" value="{{ current_user.height or '' }}"
+                    placeholder="175" step="0.1">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Kilo (kg)</label>
+                <input type="number" name="weight" class="form-input" value="{{ current_user.weight or '' }}"
+                    placeholder="75" step="0.1">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Hedef Kilo (kg)</label>
+                <input type="number" name="target_weight" class="form-input"
+                    value="{{ current_user.target_weight or '' }}" placeholder="70" step="0.1">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Aktivite Seviyesi</label>
+                <select name="activity_level" class="form-select">
+                    <option value="dusuk" {{ 'selected' if current_user.activity_level=='dusuk' }}>Düşük (masa başı)
+                    </option>
+                    <option value="orta" {{ 'selected' if current_user.activity_level=='orta' }}>Orta (haftada 3-5 gün)
+                    </option>
+                    <option value="yuksek" {{ 'selected' if current_user.activity_level=='yuksek' }}>Yüksek (her gün)
+                    </option>
+                    <option value="cok_yuksek" {{ 'selected' if current_user.activity_level=='cok_yuksek' }}>Çok Yüksek
+                        (günde 2 kez)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Hedef</label>
+                <select name="goal" class="form-select">
+                    <option value="kilo_verme" {{ 'selected' if current_user.goal=='kilo_verme' }}>Kilo Verme</option>
+                    <option value="koruma" {{ 'selected' if current_user.goal=='koruma' }}>Kilo Koruma</option>
+                    <option value="kilo_alma" {{ 'selected' if current_user.goal=='kilo_alma' }}>Kilo Alma</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Makro Hedefleri -->
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+            <div class="card-title" style="margin-bottom:12px">🎯 Günlük Makro Hedefleri</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Protein (g)</label>
+                    <input type="number" name="protein_goal" class="form-input"
+                        value="{{ current_user.protein_goal or 150 }}" placeholder="150" min="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Karbonhidrat (g)</label>
+                    <input type="number" name="carbs_goal" class="form-input"
+                        value="{{ current_user.carbs_goal or 200 }}" placeholder="200" min="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Yağ (g)</label>
+                    <input type="number" name="fat_goal" class="form-input" value="{{ current_user.fat_goal or 65 }}"
+                        placeholder="65" min="0">
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-group" style="margin-top:12px">
+            <button type="submit" class="btn btn-primary">💾 Kaydet</button>
+            <a href="{{ url_for('profile.view') }}" class="btn btn-secondary">İptal</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

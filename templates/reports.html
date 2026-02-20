@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Raporlar{% endblock %}
+{% block content %}
+<div class="page-header fade-in">
+    <h1>📈 {{ title }}</h1>
+</div>
+
+<!-- Periyot Seçimi -->
+<div class="period-selector"
+    style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div>
+        <a href="{{ url_for('reports.index', period='daily') }}"
+            class="{% if period == 'daily' %}active{% endif %}">Günlük</a>
+        <a href="{{ url_for('reports.index', period='weekly') }}"
+            class="{% if period == 'weekly' %}active{% endif %}">Haftalık</a>
+        <a href="{{ url_for('reports.index', period='monthly') }}"
+            class="{% if period == 'monthly' %}active{% endif %}">Aylık</a>
+    </div>
+    <a href="{{ url_for('reports.export_excel', period=period) }}" class="btn btn-primary btn-sm">
+        📤 Excel İndir
+    </a>
+</div>
+
+<!-- Özet Kartları -->
+<div class="report-overview slide-up">
+    <div class="stat-card green">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-value">{{ calorie_stats.total }}</div>
+        <div class="stat-label">Toplam Kalori</div>
+        <div class="stat-sub">Günlük ort: {{ calorie_stats.avg_daily }} kcal</div>
+    </div>
+    <div class="stat-card orange">
+        <div class="stat-icon">🏋️</div>
+        <div class="stat-value">{{ exercise_stats.total_calories }}</div>
+        <div class="stat-label">Yakılan Kalori</div>
+        <div class="stat-sub">{{ exercise_stats.total_sessions }} antrenman, {{ exercise_stats.total_duration }}dk</div>
+    </div>
+    <div class="stat-card blue">
+        <div class="stat-icon">💧</div>
+        <div class="stat-value">{{ water_stats.avg_daily_litre }}L</div>
+        <div class="stat-label">Ort. Günlük Su</div>
+        <div class="stat-sub">Toplam: {{ (water_stats.total_ml / 1000) | round(1) }}L</div>
+    </div>
+    <div class="stat-card purple">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-value">{{ calorie_stats.total - exercise_stats.total_calories }}</div>
+        <div class="stat-label">Net Kalori</div>
+        <div class="stat-sub">Alınan - Yakılan</div>
+    </div>
+</div>
+
+<!-- Makro Özeti -->
+<div class="card slide-up" style="margin-bottom:24px">
+    <div class="card-title">📊 Makro Besin Toplamı</div>
+    <div class="macros-summary" style="margin-top:16px">
+        <div class="macro-bar protein">
+            <div class="value">{{ calorie_stats.total_protein }}g</div>
+            <div class="label">Protein</div>
+        </div>
+        <div class="macro-bar carbs">
+            <div class="value">{{ calorie_stats.total_carbs }}g</div>
+            <div class="label">Karbonhidrat</div>
+        </div>
+        <div class="macro-bar fat">
+            <div class="value">{{ calorie_stats.total_fat }}g</div>
+            <div class="label">Yağ</div>
+        </div>
+    </div>
+</div>
+
+<!-- Kalori Grafiği -->
+<div class="card slide-up" style="margin-bottom:24px">
+    <div class="card-title">📈 Kalori Trendi (Alınan vs Yakılan)</div>
+    <div class="chart-container"><canvas id="calorieChart"></canvas></div>
+</div>
+
+<!-- Su Grafiği -->
+<div class="card slide-up" style="margin-bottom:24px">
+    <div class="card-title">💧 Su Tüketim Grafiği</div>
+    <div class="chart-container"><canvas id="waterReportChart"></canvas></div>
+</div>
+
+<!-- En Çok Listeler -->
+<div class="card-grid slide-up">
+    <div class="card">
+        <div class="card-title">🍽️ En Çok Yenen Yemekler</div>
+        {% if top_foods %}
+        <ul class="top-list" style="margin-top:16px">
+            {% for food in top_foods %}
+            <li>
+                <span class="top-rank">{{ loop.index }}.</span>
+                <span class="top-name">{{ food[0] }}</span>
+                <span class="top-value">{{ food[1] }}× · ~{{ food[2] | round | int }} kcal</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <div class="empty-state" style="padding:20px">
+            <p>Henüz veri yok</p>
+        </div>
+        {% endif %}
+    </div>
+    <div class="card">
+        <div class="card-title">💪 En Çok Yapılan Egzersizler</div>
+        {% if top_exercises %}
+        <ul class="top-list" style="margin-top:16px">
+            {% for ex in top_exercises %}
+            <li>
+                <span class="top-rank">{{ loop.index }}.</span>
+                <span class="top-name">{{ ex[0] }}</span>
+                <span class="top-value">{{ ex[1] }}× · {{ ex[2] | round | int }} kcal</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <div class="empty-state" style="padding:20px">
+            <p>Henüz veri yok</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>initReportCharts({{ daily_data | tojson }});</script>
+{% endblock %}

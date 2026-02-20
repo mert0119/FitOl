@@ -1,0 +1,587 @@
+{% extends "base.html" %}
+{% block title %}Fotoğrafla Yemek Tanı{% endblock %}
+{% block content %}
+<style>
+    .photo-card {
+        background: var(--bg-glass);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        margin-bottom: 24px
+    }
+
+    .upload-zone {
+        border: 2px dashed var(--border-light);
+        border-radius: var(--radius-lg);
+        padding: 48px 24px;
+        text-align: center;
+        cursor: pointer;
+        transition: all .3s
+    }
+
+    .upload-zone:hover {
+        border-color: var(--accent-yellow);
+        background: rgba(251, 191, 36, 0.03)
+    }
+
+    .upload-zone.has-image {
+        border-style: solid;
+        border-color: var(--accent-green);
+        padding: 16px
+    }
+
+    .macro-ring {
+        position: relative;
+        width: 140px;
+        height: 140px;
+        margin: 0 auto
+    }
+
+    .macro-ring canvas {
+        width: 140px;
+        height: 140px
+    }
+
+    .macro-center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center
+    }
+
+    .macro-center .cal-num {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--accent-yellow)
+    }
+
+    .macro-center .cal-label {
+        font-size: 11px;
+        color: var(--text-muted)
+    }
+
+    .macro-bar {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 16px;
+        flex-wrap: wrap
+    }
+
+    .macro-item {
+        text-align: center;
+        min-width: 70px
+    }
+
+    .macro-item .val {
+        font-size: 18px;
+        font-weight: 700
+    }
+
+    .macro-item .lbl {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 2px
+    }
+
+    .food-row {
+        display: flex;
+        align-items: center;
+        padding: 14px 16px;
+        background: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        margin-bottom: 8px;
+        gap: 12px;
+        transition: all .2s
+    }
+
+    .food-row:hover {
+        background: var(--bg-glass-hover)
+    }
+
+    .food-info {
+        flex: 1;
+        min-width: 0
+    }
+
+    .food-name {
+        font-weight: 600;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px
+    }
+
+    .food-detail {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 3px;
+        display: flex;
+        gap: 12px
+    }
+
+    .food-macros {
+        display: flex;
+        gap: 12px;
+        font-size: 13px;
+        flex-shrink: 0
+    }
+
+    .confidence-badge {
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 20px;
+        font-weight: 600
+    }
+
+    .conf-high {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e
+    }
+
+    .conf-med {
+        background: rgba(251, 191, 36, 0.15);
+        color: #fbbf24
+    }
+
+    .conf-low {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444
+    }
+
+    .gram-input {
+        width: 65px;
+        padding: 6px 8px;
+        background: var(--bg-glass);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        color: var(--text-primary);
+        text-align: center;
+        font-size: 13px;
+        font-weight: 600
+    }
+
+    .gram-input:focus {
+        border-color: var(--accent-yellow);
+        outline: none
+    }
+
+    .health-score {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 14px
+    }
+
+    .tip-box {
+        background: rgba(251, 191, 36, 0.08);
+        border: 1px solid rgba(251, 191, 36, 0.2);
+        border-radius: var(--radius-md);
+        padding: 12px 16px;
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-top: 12px
+    }
+
+    .tip-box span {
+        color: var(--accent-yellow);
+        font-weight: 600
+    }
+
+    .btn-analyze {
+        background: linear-gradient(135deg, var(--accent-yellow), #f59e0b);
+        color: #1a1a2e;
+        font-weight: 700;
+        padding: 14px 28px;
+        font-size: 16px;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: all .3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px
+    }
+
+    .btn-analyze:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3)
+    }
+
+    .btn-analyze:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none
+    }
+
+    .pulse-anim {
+        animation: pulse-glow 2s infinite
+    }
+
+    @keyframes pulse-glow {
+
+        0%,
+        100% {
+            opacity: 1
+        }
+
+        50% {
+            opacity: 0.6
+        }
+    }
+
+    .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 12px
+    }
+</style>
+
+<div class="page-header fade-in">
+    <h1>📸 AI Yemek Tanıma</h1>
+    <p>Tabağının fotoğrafını çek — yapay zeka besin değerlerini saniyeler içinde hesaplasın!</p>
+</div>
+
+<!-- Fotoğraf Yükleme -->
+<div class="photo-card">
+    <div id="uploadArea" class="upload-zone" onclick="document.getElementById('photoInput').click()">
+        <div id="previewArea" style="display:none">
+            <img id="previewImg" style="max-width:100%;max-height:320px;border-radius:12px;object-fit:contain">
+        </div>
+        <div id="uploadPrompt">
+            <div style="font-size:56px;margin-bottom:16px">📷</div>
+            <div style="font-size:18px;font-weight:700;margin-bottom:6px">Fotoğraf çek veya yükle</div>
+            <div style="font-size:13px;color:var(--text-muted)">Tabağını fotoğrafla — AI yemekleri otomatik tanısın
+            </div>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none"
+            onchange="handleFile(this.files[0])">
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:20px">
+        <button onclick="analyzePhoto()" class="btn-analyze" id="btnAnalyze" disabled>🤖 AI ile Analiz Et</button>
+        <button onclick="resetPhoto()" class="btn btn-secondary" id="btnReset" style="display:none">🔄 Sıfırla</button>
+    </div>
+</div>
+
+<!-- Yükleniyor -->
+<div id="loading" class="photo-card" style="display:none;text-align:center;padding:48px">
+    <div style="font-size:56px" class="pulse-anim">🧠</div>
+    <div style="font-size:18px;font-weight:700;margin-top:16px">AI tabağını analiz ediyor...</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-top:8px">Yemekler tanınıyor, besin değerleri hesaplanıyor
+    </div>
+    <div
+        style="margin-top:20px;height:4px;background:var(--bg-glass);border-radius:4px;overflow:hidden;max-width:300px;margin-left:auto;margin-right:auto">
+        <div style="height:100%;background:linear-gradient(90deg,var(--accent-yellow),var(--accent-green));border-radius:4px;animation:loading-bar 2s infinite"
+            id="loadingBar"></div>
+    </div>
+</div>
+<style>
+    @keyframes loading-bar {
+        0% {
+            width: 0;
+            margin-left: 0
+        }
+
+        50% {
+            width: 70%
+        }
+
+        100% {
+            width: 0;
+            margin-left: 100%
+        }
+    }
+</style>
+
+<!-- Sonuç -->
+<div id="resultArea" style="display:none">
+    <!-- Özet Kart -->
+    <div class="photo-card">
+        <div class="result-header">
+            <div>
+                <div style="font-size:18px;font-weight:700;margin-bottom:4px">🍽️ Analiz Sonucu</div>
+                <div id="resultDesc" style="font-size:13px;color:var(--text-secondary)"></div>
+            </div>
+            <div id="healthBadge"></div>
+        </div>
+
+        <!-- Makro Halka Grafik -->
+        <div style="display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap;margin:20px 0">
+            <div class="macro-ring">
+                <canvas id="macroChart" width="140" height="140"></canvas>
+                <div class="macro-center">
+                    <div class="cal-num" id="totalCalDisplay">0</div>
+                    <div class="cal-label">kcal</div>
+                </div>
+            </div>
+            <div class="macro-bar">
+                <div class="macro-item">
+                    <div class="val" style="color:#3b82f6" id="totalP">0g</div>
+                    <div class="lbl">Protein</div>
+                </div>
+                <div class="macro-item">
+                    <div class="val" style="color:#f59e0b" id="totalC">0g</div>
+                    <div class="lbl">Karb</div>
+                </div>
+                <div class="macro-item">
+                    <div class="val" style="color:#ef4444" id="totalF">0g</div>
+                    <div class="lbl">Yağ</div>
+                </div>
+                <div class="macro-item">
+                    <div class="val" style="color:#22c55e" id="totalFib">0g</div>
+                    <div class="lbl">Lif</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tipBox" class="tip-box" style="display:none"></div>
+    </div>
+
+    <!-- Yemek Listesi -->
+    <div class="photo-card">
+        <div style="font-size:16px;font-weight:700;margin-bottom:14px">📋 Tespit Edilen Yemekler</div>
+        <div id="foodList"></div>
+
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border-color)">
+            <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
+                <div class="form-group" style="flex:1;min-width:150px;margin-bottom:0">
+                    <label class="form-label">Öğün</label>
+                    <select id="mealType" class="form-select">
+                        <option value="kahvalti">☕ Kahvaltı</option>
+                        <option value="ogle" selected>🍽️ Öğle</option>
+                        <option value="aksam">🌙 Akşam</option>
+                        <option value="atistirmalik">🍪 Atıştırmalık</option>
+                    </select>
+                </div>
+                <button onclick="addAllToLog()" class="btn-analyze" style="height:48px;font-size:14px">✅ Tümünü Kayda
+                    Ekle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hata -->
+<div id="errorArea" class="photo-card" style="display:none;text-align:center;padding:48px">
+    <div style="font-size:56px;margin-bottom:16px">😔</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:8px">Analiz Başarısız</div>
+    <div id="errorMsg" style="color:var(--text-secondary);margin-bottom:20px"></div>
+    <button onclick="resetPhoto()" class="btn btn-secondary">🔄 Tekrar Dene</button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let currentFile = null;
+    let analyzedFoods = [];
+    let originalData = null;
+
+    function handleFile(file) {
+        if (!file || !file.type.startsWith('image/')) return;
+        currentFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            document.getElementById('previewImg').src = e.target.result;
+            document.getElementById('previewArea').style.display = 'block';
+            document.getElementById('uploadPrompt').style.display = 'none';
+            document.getElementById('uploadArea').classList.add('has-image');
+            document.getElementById('btnAnalyze').disabled = false;
+            document.getElementById('btnReset').style.display = 'inline-flex';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function resetPhoto() {
+        currentFile = null; analyzedFoods = []; originalData = null;
+        document.getElementById('previewArea').style.display = 'none';
+        document.getElementById('uploadPrompt').style.display = 'block';
+        document.getElementById('uploadArea').classList.remove('has-image');
+        document.getElementById('btnAnalyze').disabled = true;
+        document.getElementById('btnReset').style.display = 'none';
+        document.getElementById('resultArea').style.display = 'none';
+        document.getElementById('errorArea').style.display = 'none';
+        document.getElementById('photoInput').value = '';
+    }
+
+    function analyzePhoto() {
+        if (!currentFile) return;
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('resultArea').style.display = 'none';
+        document.getElementById('errorArea').style.display = 'none';
+        document.getElementById('btnAnalyze').disabled = true;
+
+        const formData = new FormData();
+        formData.append('photo', currentFile);
+
+        fetch('/food/photo/analyze', { method: 'POST', body: formData })
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('btnAnalyze').disabled = false;
+                if (data.success && data.foods && data.foods.length > 0) {
+                    originalData = JSON.parse(JSON.stringify(data));
+                    analyzedFoods = data.foods.map(f => ({ ...f, multiplier: 1 }));
+                    showResults(data);
+                } else {
+                    document.getElementById('errorArea').style.display = 'block';
+                    document.getElementById('errorMsg').textContent = data.message || 'Yemek tespit edilemedi.';
+                }
+            })
+            .catch(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('btnAnalyze').disabled = false;
+                document.getElementById('errorArea').style.display = 'block';
+                document.getElementById('errorMsg').textContent = 'Bağlantı hatası.';
+            });
+    }
+
+    function showResults(data) {
+        // Toplamları hesapla
+        let tCal = 0, tP = 0, tC = 0, tF = 0, tFib = 0;
+        analyzedFoods.forEach(f => {
+            const m = f.multiplier || 1;
+            tCal += Math.round((f.calories || 0) * m);
+            tP += (f.protein || 0) * m;
+            tC += (f.carbs || 0) * m;
+            tF += (f.fat || 0) * m;
+            tFib += (f.fiber || 0) * m;
+        });
+
+        document.getElementById('totalCalDisplay').textContent = tCal;
+        document.getElementById('totalP').textContent = tP.toFixed(1) + 'g';
+        document.getElementById('totalC').textContent = tC.toFixed(1) + 'g';
+        document.getElementById('totalF').textContent = tF.toFixed(1) + 'g';
+        document.getElementById('totalFib').textContent = tFib.toFixed(1) + 'g';
+        document.getElementById('resultDesc').textContent = data.description || '';
+
+        // Sağlık puanı
+        const hs = data.health_score || 5;
+        const badge = document.getElementById('healthBadge');
+        const hsColor = hs >= 7 ? '#22c55e' : hs >= 4 ? '#f59e0b' : '#ef4444';
+        badge.innerHTML = `<div class="health-score" style="background:${hsColor}22;color:${hsColor}">❤️ ${hs}/10</div>`;
+
+        // Öneri
+        const tipBox = document.getElementById('tipBox');
+        if (data.tips) {
+            tipBox.innerHTML = `<span>💡 Öneri:</span> ${data.tips}`;
+            tipBox.style.display = 'block';
+        } else { tipBox.style.display = 'none'; }
+
+        // Makro halka grafik
+        drawMacroChart(tP, tC, tF);
+
+        // Yemek listesi
+        const list = document.getElementById('foodList');
+        list.innerHTML = analyzedFoods.map((f, i) => {
+            const m = f.multiplier || 1;
+            const cal = Math.round((f.calories || 0) * m);
+            const conf = f.confidence || 50;
+            const confClass = conf >= 80 ? 'conf-high' : conf >= 50 ? 'conf-med' : 'conf-low';
+            const grams = Math.round((f.grams || 100) * m);
+            return `
+        <div class="food-row">
+            <div class="food-info">
+                <div class="food-name">
+                    ${f.name}
+                    <span class="confidence-badge ${confClass}">${conf}%</span>
+                </div>
+                <div class="food-detail">
+                    <span>${f.portion || ''}</span>
+                    <span style="color:var(--accent-blue)">P:${((f.protein || 0) * m).toFixed(1)}g</span>
+                    <span style="color:var(--accent-orange)">K:${((f.carbs || 0) * m).toFixed(1)}g</span>
+                    <span style="color:var(--accent-red)">Y:${((f.fat || 0) * m).toFixed(1)}g</span>
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+                <input type="number" class="gram-input" value="${grams}" min="10" step="10"
+                    onchange="updateGrams(${i}, this.value, ${f.grams || 100})" title="Gram">
+                <span style="font-size:12px;color:var(--text-muted)">g</span>
+                <span style="font-weight:700;color:var(--accent-green);min-width:55px;text-align:right">${cal} kcal</span>
+                <button onclick="removeFood(${i})" style="background:none;border:none;color:var(--accent-red);cursor:pointer;font-size:16px;padding:4px;opacity:0.6" title="Kaldır">✕</button>
+            </div>
+        </div>`;
+        }).join('');
+
+        document.getElementById('resultArea').style.display = 'block';
+        document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function drawMacroChart(p, c, f) {
+        const canvas = document.getElementById('macroChart');
+        const ctx = canvas.getContext('2d');
+        const total = p + c + f || 1;
+        const cx = 70, cy = 70, r = 60, lw = 14;
+
+        ctx.clearRect(0, 0, 140, 140);
+
+        const segments = [
+            { val: p / total, color: '#3b82f6' },
+            { val: c / total, color: '#f59e0b' },
+            { val: f / total, color: '#ef4444' }
+        ];
+
+        let angle = -Math.PI / 2;
+        segments.forEach(s => {
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, angle, angle + s.val * Math.PI * 2);
+            ctx.strokeStyle = s.color;
+            ctx.lineWidth = lw;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            angle += s.val * Math.PI * 2 + 0.05;
+        });
+    }
+
+    function updateGrams(i, newGrams, origGrams) {
+        const mult = parseInt(newGrams) / (origGrams || 100);
+        analyzedFoods[i].multiplier = mult;
+        showResults(originalData || {});
+    }
+
+    function removeFood(i) {
+        analyzedFoods.splice(i, 1);
+        if (analyzedFoods.length === 0) { document.getElementById('resultArea').style.display = 'none'; return; }
+        showResults(originalData || {});
+    }
+
+    function addAllToLog() {
+        if (analyzedFoods.length === 0) return;
+        const btn = event.target;
+        btn.disabled = true;
+        btn.textContent = '⏳ Ekleniyor...';
+
+        fetch('/food/photo/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                foods: analyzedFoods.map(f => {
+                    const m = f.multiplier || 1;
+                    return {
+                        name: f.name,
+                        calories: Math.round((f.calories || 0) * m),
+                        protein: Math.round((f.protein || 0) * m * 10) / 10,
+                        carbs: Math.round((f.carbs || 0) * m * 10) / 10,
+                        fat: Math.round((f.fat || 0) * m * 10) / 10
+                    };
+                }),
+                meal_type: document.getElementById('mealType').value
+            })
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    btn.textContent = '✅ Eklendi!';
+                    btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+                    setTimeout(() => { resetPhoto(); btn.disabled = false; btn.textContent = '✅ Tümünü Kayda Ekle'; btn.style.background = ''; }, 1500);
+                }
+            });
+    }
+</script>
+{% endblock %}

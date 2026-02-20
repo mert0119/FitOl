@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Yeni Diyet Planı{% endblock %}
+{% block content %}
+<div class="page-header fade-in">
+    <h1>➕ Yeni Diyet Planı</h1>
+    <p>Hedefine uygun bir plan oluştur</p>
+</div>
+
+<div class="card slide-up">
+    <form method="POST">
+        <div class="form-row">
+            <div class="form-group" style="flex:2">
+                <label class="form-label">Plan Adı</label>
+                <input type="text" name="name" class="form-input" placeholder="Örn: Yaz Diyeti 2025" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Hedef</label>
+                <select name="goal" class="form-select">
+                    <option value="kilo_verme">🔻 Kilo Verme</option>
+                    <option value="koruma">⚖️ Kilo Koruma</option>
+                    <option value="kilo_alma">🔺 Kilo Alma</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Günlük Kalori (otomatik hesaplanır)</label>
+                <input type="number" name="daily_calories" class="form-input"
+                    placeholder="{{ current_user.calculate_tdee() | round | int if current_user.calculate_tdee() else 2000 }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Protein Oranı (%)</label>
+                <input type="number" name="protein_ratio" class="form-input" value="30" min="10" max="60">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Karbonhidrat Oranı (%)</label>
+                <input type="number" name="carb_ratio" class="form-input" value="40" min="10" max="70">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Yağ Oranı (%)</label>
+                <input type="number" name="fat_ratio" class="form-input" value="30" min="10" max="60">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">🌅 Kahvaltı Önerileri</label>
+            <textarea name="breakfast" class="form-textarea"
+                placeholder="Örn: 2 yumurta, 1 dilim tam buğday ekmeği, peynir, domates, salatalık"></textarea>
+        </div>
+        <div class="form-group">
+            <label class="form-label">☀️ Öğle Yemeği Önerileri</label>
+            <textarea name="lunch" class="form-textarea"
+                placeholder="Örn: Izgara tavuk, bulgur pilavı, salata"></textarea>
+        </div>
+        <div class="form-group">
+            <label class="form-label">🌙 Akşam Yemeği Önerileri</label>
+            <textarea name="dinner" class="form-textarea" placeholder="Örn: Izgara balık, haşlanmış sebze"></textarea>
+        </div>
+        <div class="form-group">
+            <label class="form-label">🍎 Atıştırmalık Önerileri</label>
+            <textarea name="snacks" class="form-textarea" placeholder="Örn: 1 avuç badem, 1 muz, yoğurt"></textarea>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Notlar</label>
+            <textarea name="notes" class="form-textarea" placeholder="İsteğe bağlı notlar"></textarea>
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary">✅ Planı Oluştur</button>
+            <a href="{{ url_for('diet_plan.index') }}" class="btn btn-secondary">İptal</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

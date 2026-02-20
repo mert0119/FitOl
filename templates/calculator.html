@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Hesaplayıcı{% endblock %}
+{% block content %}
+<div class="page-header fade-in">
+    <h1>🧮 Sağlık Hesaplayıcı</h1>
+    <p>BMI, BMR, TDEE ve ideal kilonu hesapla</p>
+</div>
+
+<div class="card slide-up" style="margin-bottom:24px">
+    <form method="POST">
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Boy (cm)</label>
+                <input type="number" name="height" class="form-input"
+                    value="{{ results.height if results and 'error' not in results else defaults.height }}"
+                    placeholder="175" step="0.1" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Kilo (kg)</label>
+                <input type="number" name="weight" class="form-input"
+                    value="{{ results.weight if results and 'error' not in results else defaults.weight }}"
+                    placeholder="75" step="0.1" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Yaş</label>
+                <input type="number" name="age" class="form-input"
+                    value="{{ results.age if results and 'error' not in results else defaults.age }}" placeholder="25"
+                    required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Cinsiyet</label>
+                <select name="gender" class="form-select">
+                    <option value="erkek" {{ 'selected' if (results and results.get('gender')=='erkek' ) or (not results
+                        and defaults.gender=='erkek' ) }}>Erkek</option>
+                    <option value="kadin" {{ 'selected' if (results and results.get('gender')=='kadin' ) or (not results
+                        and defaults.gender=='kadin' ) }}>Kadın</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Aktivite Seviyesi</label>
+                <select name="activity_level" class="form-select">
+                    <option value="dusuk" {{ 'selected' if (results and results.get('activity_level')=='dusuk' ) or (not
+                        results and defaults.activity_level=='dusuk' ) }}>Düşük (masa başı)</option>
+                    <option value="orta" {{ 'selected' if (results and results.get('activity_level')=='orta' ) or (not
+                        results and defaults.activity_level=='orta' ) }}>Orta (haftada 3-5 gün)</option>
+                    <option value="yuksek" {{ 'selected' if (results and results.get('activity_level')=='yuksek' ) or
+                        (not results and defaults.activity_level=='yuksek' ) }}>Yüksek (her gün)</option>
+                    <option value="cok_yuksek" {{ 'selected' if (results and results.get('activity_level')=='cok_yuksek'
+                        ) or (not results and defaults.activity_level=='cok_yuksek' ) }}>Çok Yüksek (günde 2 kez)
+                    </option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">🧮 Hesapla</button>
+    </form>
+</div>
+
+{% if results %}
+{% if results.error is defined %}
+<div class="card">
+    <p style="color:var(--accent-red);text-align:center;padding:20px">{{ results.error }}</p>
+</div>
+{% else %}
+<div class="result-grid slide-up">
+    <div class="result-card">
+        <div class="result-value" style="color:{{ results.bmi_color }}">{{ results.bmi }}</div>
+        <div class="result-label">BMI (Vücut Kitle İndeksi)</div>
+        <div class="result-extra">{{ results.bmi_category }}</div>
+    </div>
+    <div class="result-card">
+        <div class="result-value" style="color:var(--accent-orange)">{{ results.bmr }}</div>
+        <div class="result-label">BMR (Bazal Metabolizma)</div>
+        <div class="result-extra">Dinlenme halinde kalori</div>
+    </div>
+    <div class="result-card">
+        <div class="result-value" style="color:var(--accent-blue)">{{ results.tdee }}</div>
+        <div class="result-label">TDEE (Günlük Harcama)</div>
+        <div class="result-extra">Aktivite dahil kalori</div>
+    </div>
+    <div class="result-card">
+        <div class="result-value" style="color:var(--accent-green)">{{ results.ideal_weight }}</div>
+        <div class="result-label">İdeal Kilo (kg)</div>
+        <div class="result-extra">Devine formülü</div>
+    </div>
+    <div class="result-card">
+        <div class="result-value" style="color:var(--accent-purple)">%{{ results.body_fat }}</div>
+        <div class="result-label">Tahmini Yağ Oranı</div>
+        <div class="result-extra">Yaklaşık değer</div>
+    </div>
+</div>
+
+<div class="card slide-up" style="margin-top:20px">
+    <div class="card-title" style="margin-bottom:16px">🎯 Kalori Hedefleri</div>
+    <div class="result-grid">
+        <div class="result-card" style="border-color:var(--accent-green)">
+            <div class="result-value" style="color:var(--accent-green);font-size:28px">{{ results.calories_lose }}</div>
+            <div class="result-label">Kilo Vermek İçin</div>
+            <div class="result-extra">-500 kcal/gün</div>
+        </div>
+        <div class="result-card" style="border-color:var(--accent-blue)">
+            <div class="result-value" style="color:var(--accent-blue);font-size:28px">{{ results.calories_maintain }}
+            </div>
+            <div class="result-label">Kilo Korumak İçin</div>
+            <div class="result-extra">TDEE ile eşit</div>
+        </div>
+        <div class="result-card" style="border-color:var(--accent-orange)">
+            <div class="result-value" style="color:var(--accent-orange);font-size:28px">{{ results.calories_gain }}
+            </div>
+            <div class="result-label">Kilo Almak İçin</div>
+            <div class="result-extra">+500 kcal/gün</div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}AI Yemek Önerisi{% endblock %}
+{% block content %}
+<div class="page-header fade-in">
+    <h1>🤖 Akıllı Yemek Önerisi</h1>
+    <p>Kalan makro hedeflerine göre ne yemeli önerisi</p>
+</div>
+
+<!-- Bugünkü Durum -->
+<div class="card slide-up" style="margin-bottom:24px">
+    <div class="card-title">📊 Bugünkü Makro Durumun</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:16px;margin-top:16px">
+        <div style="text-align:center">
+            <div style="font-size:24px;font-weight:800;color:var(--accent-green)">{{ consumed.calories }}</div>
+            <div style="font-size:12px;color:var(--text-muted)">/ {{ goals.calories }} kcal</div>
+            <div class="progress-bar" style="margin-top:8px;height:6px;background:var(--border);border-radius:3px">
+                <div
+                    style="width:{{ [consumed.calories/goals.calories*100, 100]|min }}%;height:100%;background:var(--accent-green);border-radius:3px">
+                </div>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Kalori</div>
+        </div>
+        <div style="text-align:center">
+            <div style="font-size:24px;font-weight:800;color:var(--accent-blue)">{{ consumed.protein }}g</div>
+            <div style="font-size:12px;color:var(--text-muted)">/ {{ goals.protein }}g</div>
+            <div class="progress-bar" style="margin-top:8px;height:6px;background:var(--border);border-radius:3px">
+                <div
+                    style="width:{{ [consumed.protein/goals.protein*100, 100]|min }}%;height:100%;background:var(--accent-blue);border-radius:3px">
+                </div>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Protein</div>
+        </div>
+        <div style="text-align:center">
+            <div style="font-size:24px;font-weight:800;color:var(--accent-orange)">{{ consumed.carbs }}g</div>
+            <div style="font-size:12px;color:var(--text-muted)">/ {{ goals.carbs }}g</div>
+            <div class="progress-bar" style="margin-top:8px;height:6px;background:var(--border);border-radius:3px">
+                <div
+                    style="width:{{ [consumed.carbs/goals.carbs*100, 100]|min }}%;height:100%;background:var(--accent-orange);border-radius:3px">
+                </div>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Karb</div>
+        </div>
+        <div style="text-align:center">
+            <div style="font-size:24px;font-weight:800;color:var(--accent-red)">{{ consumed.fat }}g</div>
+            <div style="font-size:12px;color:var(--text-muted)">/ {{ goals.fat }}g</div>
+            <div class="progress-bar" style="margin-top:8px;height:6px;background:var(--border);border-radius:3px">
+                <div
+                    style="width:{{ [consumed.fat/goals.fat*100, 100]|min }}%;height:100%;background:var(--accent-red);border-radius:3px">
+                </div>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Yağ</div>
+        </div>
+    </div>
+</div>
+
+<!-- Öneri Mesajı -->
+<div class="card slide-up"
+    style="margin-bottom:24px;background:linear-gradient(135deg, rgba(56,189,248,0.1), rgba(168,85,247,0.1))">
+    <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:32px">🎯</span>
+        <div>
+            <div style="font-weight:700;font-size:16px">Öncelik: {{ priority_label }}</div>
+            <div style="font-size:14px;color:var(--text-secondary)">
+                Kalan: {{ remaining.calories|round|int }} kcal · {{ remaining.protein|round|int }}g protein ·
+                {{ remaining.carbs|round|int }}g karb · {{ remaining.fat|round|int }}g yağ
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Önerilen Yemekler -->
+<div class="card slide-up">
+    <div class="card-title" style="margin-bottom:16px">🍽️ Sana Uygun Yemekler</div>
+    {% if suggestions %}
+    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:12px">
+        {% for food in suggestions %}
+        <div class="card" style="padding:16px;border:1px solid var(--border)">
+            <div style="font-weight:700;font-size:15px;margin-bottom:8px">{{ food.name }}</div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:13px">
+                <span style="color:var(--accent-green)">🔥 {{ food.cal }} kcal</span>
+                <span style="color:var(--accent-blue)">💪 {{ food.protein }}g P</span>
+                <span style="color:var(--accent-orange)">🌾 {{ food.carbs }}g K</span>
+                <span style="color:var(--accent-red)">🫒 {{ food.fat }}g Y</span>
+            </div>
+            {% if food.category %}
+            <div style="font-size:11px;color:var(--text-muted);margin-top:6px">{{ food.category }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">🎉</div>
+        <p>Bugünkü hedeflerine ulaştın!</p>
+    </div>
+    {% endif %}
+</div>
+
+<div style="margin-top:16px">
+    <a href="{{ url_for('food.log') }}" class="btn btn-primary">🍽️ Yemek Kaydına Git</a>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Ölçüm Grafikleri{% endblock %}
+{% block content %}
+<div class="page-header fade-in">
+    <h1>📈 Ölçüm Grafikleri</h1>
+    <p>Vücut ölçümlerinin zaman içindeki değişimi</p>
+</div>
+
+<div class="card slide-up">
+    <div class="card-title">Kilo ve Ölçüm Trendi (Son 90 Gün)</div>
+    <div class="chart-container" style="height:400px">
+        <canvas id="measurementChart"></canvas>
+    </div>
+</div>
+
+<div style="margin-top:16px"><a href="{{ url_for('measurement.log') }}" class="btn btn-primary">← Ölçümlere Dön</a>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>initMeasurementChart();</script>
+{% endblock %}

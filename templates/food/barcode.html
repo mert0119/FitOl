@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+{% block title %}Barkod Tarama{% endblock %}
+{% block content %}
+<div class="page-header fade-in">
+    <h1>📷 Barkod Tarama</h1>
+    <p>Ürünün barkodunu tarat, besin değerlerini otomatik öğren!</p>
+</div>
+
+<!-- Tarama Alanı -->
+<div class="card slide-up" style="margin-bottom:24px">
+    <div class="card-title" style="margin-bottom:16px">🔍 Barkod Tara veya Yaz</div>
+
+    <!-- Kamera Tarama -->
+    <div id="reader" style="width:100%;max-width:500px;margin:0 auto 20px"></div>
+
+    <div style="display:flex;gap:12px;justify-content:center;margin-bottom:16px">
+        <button onclick="startScanner()" class="btn btn-primary" id="btnStart">📸 Kamerayı Aç</button>
+        <button onclick="stopScanner()" class="btn btn-secondary" id="btnStop" style="display:none">⏹️ Durdur</button>
+    </div>
+
+    <!-- Manuel Giriş -->
+    <div style="display:flex;gap:12px;align-items:flex-end;max-width:500px;margin:0 auto">
+        <div class="form-group" style="flex:1;margin-bottom:0">
+            <label class="form-label">Manuel Barkod</label>
+            <input type="text" id="manualBarcode" class="form-input" placeholder="ör: 8690504012345"
+                onkeypress="if(event.key==='Enter')lookupBarcode(this.value)">
+        </div>
+        <button onclick="lookupBarcode(document.getElementById('manualBarcode').value)" class="btn btn-primary">🔎
+            Ara</button>
+    </div>
+</div>
+
+<!-- Sonuç -->
+<div id="result" class="card slide-up" style="display:none;margin-bottom:24px">
+    <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+        <img id="productImage" src=""
+            style="width:120px;height:120px;object-fit:contain;border-radius:12px;background:var(--bg-glass);display:none">
+        <div style="flex:1;min-width:200px">
+            <div id="productName" style="font-size:20px;font-weight:700;margin-bottom:4px"></div>
+            <div id="productBrand" style="font-size:14px;color:var(--text-secondary);margin-bottom:12px"></div>
+            <div id="productBarcode" style="font-size:12px;color:var(--text-muted);margin-bottom:16px"></div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:12px">
+                <div style="text-align:center;padding:12px;background:var(--bg-glass);border-radius:var(--radius-md)">
+                    <div id="valCal" style="font-size:22px;font-weight:800;color:var(--accent-green)"></div>
+                    <div style="font-size:11px;color:var(--text-muted)">Kalori</div>
+                </div>
+                <div style="text-align:center;padding:12px;background:var(--bg-glass);border-radius:var(--radius-md)">
+                    <div id="valProtein" style="font-size:22px;font-weight:800;color:var(--accent-blue)"></div>
+                    <div style="font-size:11px;color:var(--text-muted)">Protein</div>
+                </div>
+                <div style="text-align:center;padding:12px;background:var(--bg-glass);border-radius:var(--radius-md)">
+                    <div id="valCarbs" style="font-size:22px;font-weight:800;color:var(--accent-orange)"></div>
+                    <div style="font-size:11px;color:var(--text-muted)">Karb</div>
+                </div>
+                <div style="text-align:center;padding:12px;background:var(--bg-glass);border-radius:var(--radius-md)">
+                    <div id="valFat" style="font-size:22px;font-weight:800;color:var(--accent-red)"></div>
+                    <div style="font-size:11px;color:var(--text-muted)">Yağ</div>
+                </div>
+            </div>
+
+            <div id="servingInfo" style="font-size:13px;color:var(--text-secondary);margin-top:12px"></div>
+
+            <!-- Yemek Kaydına Ekle -->
+            <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border-color)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Öğün</label>
+                        <select id="mealType" class="form-select">
+                            <option value="kahvalti">☕ Kahvaltı</option>
+                            <option value="ogle">🍽️ Öğle</option>
+                            <option value="aksam">🌙 Akşam</option>
+                            <option value="atistirmalik" selected>🍪 Atıştırmalık</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Porsiyon</label>
+                        <input type="number" id="portionCount" class="form-input" value="1" min="0.5" step="0.5"
+                            onchange="updateNutrition()">
+                    </div>
+                </div>
+                <button onclick="addToLog()" class="btn btn-primary" style="width:100%">✅ Yemek Kaydına Ekle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bulunamadı -->
+<div id="notFound" class="card slide-up" style="display:none;text-align:center;padding:40px">
+    <div style="font-size:48px;margin-bottom:12px">😔</div>
+    <div style="font-size:18px;font-weight:600;margin-bottom:8px">Ürün Bulunamadı</div>
+    <div id="notFoundMsg" style="color:var(--text-secondary)"></div>
+    <a href="{{ url_for('food.log') }}" class="btn btn-secondary" style="margin-top:16px">🍽️ Manuel Ekle</a>
+</div>
+
+<!-- Yükleniyor -->
+<div id="loading" style="display:none;text-align:center;padding:40px">
+    <div style="font-size:40px;animation:pulse 1s infinite">🔍</div>
+    <div style="margin-top:12px;color:var(--text-secondary)">Ürün aranıyor...</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+    let scanner = null;
+    let currentProduct = null;
+
+    function startScanner() {
+        document.getElementById('btnStart').style.display = 'none';
+        document.getElementById('btnStop').style.display = 'inline-flex';
+
+        scanner = new Html5Qrcode("reader");
+        scanner.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: { width: 300, height: 150 }, aspectRatio: 1.777 },
+            (decodedText) => {
+                stopScanner();
+                lookupBarcode(decodedText);
+            },
+            () => { }
+        ).catch(err => {
+            alert('Kamera erişimi reddedildi veya desteklenmiyor. Manuel barkod girişi kullanın.');
+            document.getElementById('btnStart').style.display = 'inline-flex';
+            document.getElementById('btnStop').style.display = 'none';
+        });
+    }
+
+    function stopScanner() {
+        if (scanner) {
+            scanner.stop().then(() => {
+                scanner.clear();
+            }).catch(() => { });
+        }
+        document.getElementById('btnStart').style.display = 'inline-flex';
+        document.getElementById('btnStop').style.display = 'none';
+    }
+
+    function lookupBarcode(barcode) {
+        barcode = barcode.trim();
+        if (!barcode) return;
+
+        document.getElementById('result').style.display = 'none';
+        document.getElementById('notFound').style.display = 'none';
+        document.getElementById('loading').style.display = 'block';
+
+        fetch(`/barcode/lookup/${barcode}`)
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none';
+
+                if (data.found) {
+                    currentProduct = data;
+                    showProduct(data);
+                } else {
+                    document.getElementById('notFound').style.display = 'block';
+                    document.getElementById('notFoundMsg').textContent = data.message || 'Bu barkod veritabanında yok.';
+                }
+            })
+            .catch(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('notFound').style.display = 'block';
+                document.getElementById('notFoundMsg').textContent = 'Bağlantı hatası.';
+            });
+    }
+
+    function showProduct(data) {
+        document.getElementById('productName').textContent = data.name;
+        document.getElementById('productBrand').textContent = data.brand ? `🏷️ ${data.brand}` : '';
+        document.getElementById('productBarcode').textContent = `📦 Barkod: ${data.barcode}`;
+
+        const img = document.getElementById('productImage');
+        if (data.image) {
+            img.src = data.image;
+            img.style.display = 'block';
+        } else {
+            img.style.display = 'none';
+        }
+
+        document.getElementById('servingInfo').textContent =
+            `📏 Porsiyon: ${data.serving_size} | 100g: ${data.per_100g.calories} kcal`;
+
+        document.getElementById('portionCount').value = 1;
+        updateNutrition();
+
+        document.getElementById('result').style.display = 'block';
+        document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function updateNutrition() {
+        if (!currentProduct) return;
+        const portion = parseFloat(document.getElementById('portionCount').value) || 1;
+        const s = currentProduct.per_serving;
+
+        document.getElementById('valCal').textContent = Math.round(s.calories * portion);
+        document.getElementById('valProtein').textContent = (s.protein * portion).toFixed(1) + 'g';
+        document.getElementById('valCarbs').textContent = (s.carbs * portion).toFixed(1) + 'g';
+        document.getElementById('valFat').textContent = (s.fat * portion).toFixed(1) + 'g';
+    }
+
+    function addToLog() {
+        if (!currentProduct) return;
+        const portion = parseFloat(document.getElementById('portionCount').value) || 1;
+        const s = currentProduct.per_serving;
+
+        fetch('/barcode/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: currentProduct.name + (currentProduct.brand ? ` (${currentProduct.brand})` : ''),
+                meal_type: document.getElementById('mealType').value,
+                portion: portion,
+                calories: Math.round(s.calories * portion),
+                protein: Math.round(s.protein * portion * 10) / 10,
+                carbs: Math.round(s.carbs * portion * 10) / 10,
+                fat: Math.round(s.fat * portion * 10) / 10
+            })
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ ' + data.message);
+                    currentProduct = null;
+                    document.getElementById('result').style.display = 'none';
+                }
+            });
+    }
+</script>
+{% endblock %}

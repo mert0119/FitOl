@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Antrenman Programları{% endblock %}
+{% block content %}
+<div class="page-header fade-in">
+    <h1>📋 Antrenman Programları</h1>
+    <p>Seviyene uygun hazır program seç</p>
+</div>
+
+{% for key, program in programs.items() %}
+<div class="program-card slide-up">
+    <div class="program-header">
+        <h3>{{ program.name }}</h3>
+        <p>{{ program.description }}</p>
+    </div>
+    {% for day, exercises in program.days.items() %}
+    <div class="program-day">
+        <h4>📅 {{ day }}</h4>
+        {% for ex in exercises %}
+        <div class="program-exercise">
+            <span>{{ ex.exercise }}</span>
+            <span style="color:var(--text-secondary)">{{ ex.sets }} × {{ ex.reps }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+
+<a href="{{ url_for('exercise.log') }}" class="btn btn-primary">← Egzersiz Takibine Dön</a>
+{% endblock %}

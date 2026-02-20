@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}İlerleme Fotoğrafları{% endblock %}
+{% block content %}
+<div class="page-header fade-in">
+    <h1>📸 İlerleme Fotoğrafları</h1>
+    <p>Vücut dönüşümünü fotoğraflarla kaydet ve karşılaştır</p>
+</div>
+
+<!-- Fotoğraf Ekleme -->
+<div class="card slide-up" style="margin-bottom:24px">
+    <div class="card-title">➕ Yeni Fotoğraf Ekle</div>
+    <form method="POST" action="{{ url_for('progress.add') }}" enctype="multipart/form-data" style="margin-top:16px">
+        <div class="form-row">
+            <div class="form-group" style="flex:2">
+                <label class="form-label">Fotoğraf</label>
+                <input type="file" name="photo" class="form-input" accept="image/*" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tarih</label>
+                <input type="date" name="date" class="form-input" value="{{ today if today else '' }}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Kilo (kg)</label>
+                <input type="number" name="weight" class="form-input" placeholder="75" step="0.1" min="0">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Not</label>
+            <input type="text" name="notes" class="form-input" placeholder="İsteğe bağlı not (ör: 3. hafta sonu)">
+        </div>
+        <button type="submit" class="btn btn-primary">📸 Yükle</button>
+    </form>
+</div>
+
+<!-- Fotoğraf Galerisi -->
+<div class="card slide-up">
+    <div class="card-title" style="margin-bottom:16px">🖼️ Galeri</div>
+    {% if photos %}
+    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));gap:16px">
+        {% for photo in photos %}
+        <div class="card" style="padding:0;overflow:hidden;position:relative">
+            <img src="{{ url_for('static', filename=photo.photo_path) }}"
+                style="width:100%;height:250px;object-fit:cover;display:block">
+            <div style="padding:12px">
+                <div style="font-weight:600;font-size:14px">📅 {{ photo.date.strftime('%d/%m/%Y') }}</div>
+                {% if photo.weight %}
+                <div style="color:var(--accent-green);font-weight:600">⚖️ {{ photo.weight }} kg</div>
+                {% endif %}
+                {% if photo.notes %}
+                <div style="font-size:12px;color:var(--text-muted);margin-top:4px">{{ photo.notes }}</div>
+                {% endif %}
+                <a href="{{ url_for('progress.delete', id=photo.id) }}" class="btn btn-danger btn-sm"
+                    style="margin-top:8px;width:100%;text-align:center"
+                    onclick="return confirm('Silmek istediğinize emin misiniz?')">🗑️ Sil</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">📸</div>
+        <p>Henüz ilerleme fotoğrafı yok</p>
+        <p style="font-size:14px;color:var(--text-muted)">İlk fotoğrafını yükleyerek dönüşümünü takip etmeye başla!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

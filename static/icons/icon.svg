@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="64" fill="#0f1923"/>
+  <g transform="translate(256,256)">
+    <!-- Dumbbell bar -->
+    <rect x="-120" y="-12" width="240" height="24" rx="12" fill="#10b981"/>
+    <!-- Left weight -->
+    <rect x="-160" y="-50" width="50" height="100" rx="10" fill="#10b981"/>
+    <rect x="-175" y="-65" width="30" height="130" rx="8" fill="#0d9668"/>
+    <!-- Right weight -->
+    <rect x="110" y="-50" width="50" height="100" rx="10" fill="#10b981"/>
+    <rect x="145" y="-65" width="30" height="130" rx="8" fill="#0d9668"/>
+    <!-- Shine effect -->
+    <rect x="-155" y="-55" width="8" height="40" rx="4" fill="#34d399" opacity="0.6"/>
+    <rect x="115" y="-55" width="8" height="40" rx="4" fill="#34d399" opacity="0.6"/>
+  </g>
+  <!-- Bottom text area accent -->
+  <text x="256" y="420" text-anchor="middle" font-family="Arial,sans-serif" font-weight="800" font-size="72" fill="#10b981">FIT</text>
+</svg>

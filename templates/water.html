@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Su Takibi{% endblock %}
+{% block content %}
+<div class="page-header fade-in">
+    <h1>💧 Su Takibi</h1>
+    <p>Günlük su tüketimini takip et</p>
+</div>
+
+<div class="date-nav">
+    <input type="date" class="form-input" value="{{ selected_date.isoformat() }}"
+        onchange="location.href='/water?date=' + this.value" style="width:auto">
+    {% if selected_date != today %}
+    <a href="{{ url_for('water.index') }}" class="btn btn-secondary btn-sm">Bugün</a>
+    {% endif %}
+</div>
+
+<!-- Günlük Durum -->
+<div class="card slide-up" style="margin-bottom:20px">
+    <div style="text-align:center;padding:20px 0">
+        <div style="font-size:64px;margin-bottom:16px">💧</div>
+        <div style="font-size:48px;font-weight:800;color:var(--accent-blue)">{{ total_litre }}L</div>
+        <div style="color:var(--text-secondary);margin:8px 0">/ {{ goal_litre }}L hedef</div>
+        <div class="progress-bar" style="max-width:400px;margin:16px auto;height:16px">
+            <div class="progress-fill"
+                style="width:{{ percentage }}%;background:linear-gradient(135deg,#3b82f6,#8b5cf6)"></div>
+        </div>
+        <div
+            style="font-size:24px;font-weight:700;color:{% if percentage >= 100 %}var(--accent-green){% else %}var(--accent-blue){% endif %}">
+            %{{ percentage }}
+            {% if percentage >= 100 %} ✅ Hedefe ulaştın!{% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Hızlı Ekleme Butonları -->
+<div class="card slide-up" style="margin-bottom:20px">
+    <div class="card-title" style="margin-bottom:16px">➕ Su Ekle</div>
+    <form method="POST" action="{{ url_for('water.add') }}">
+        <input type="hidden" name="date" value="{{ selected_date.isoformat() }}">
+        <div class="water-buttons">
+            <button type="submit" name="amount_type" value="glass" class="water-btn">
+                <span class="water-icon">🥤</span>
+                <span>1 Bardak</span>
+                <span class="water-amount">200ml</span>
+            </button>
+            <button type="submit" name="amount_type" value="bottle_small" class="water-btn">
+                <span class="water-icon">🧴</span>
+                <span>Küçük Şişe</span>
+                <span class="water-amount">500ml</span>
+            </button>
+            <button type="submit" name="amount_type" value="bottle_large" class="water-btn">
+                <span class="water-icon">🍶</span>
+                <span>Büyük Şişe</span>
+                <span class="water-amount">1000ml</span>
+            </button>
+        </div>
+    </form>
+    <form method="POST" action="{{ url_for('water.add') }}" class="form-inline">
+        <input type="hidden" name="date" value="{{ selected_date.isoformat() }}">
+        <input type="hidden" name="amount_type" value="custom">
+        <div class="form-group">
+            <label class="form-label">Özel Miktar (ml)</label>
+            <input type="number" name="amount_ml" class="form-input" placeholder="300" min="1">
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-bottom:20px">Ekle</button>
+    </form>
+</div>
+
+<!-- Günün Kayıtları -->
+<div class="card slide-up">
+    <div class="card-title" style="margin-bottom:16px">📋 Günün Kayıtları</div>
+    {% if logs %}
+    {% for log in logs %}
+    <div class="exercise-card" style="margin-bottom:8px">
+        <div class="exercise-info">
+            <h4>💧 {{ log.amount_ml | int }}ml</h4>
+            <div class="exercise-stats"><span>{{ log.created_at.strftime('%H:%M') }}</span></div>
+        </div>
+        <a href="{{ url_for('water.delete', id=log.id) }}" class="btn btn-danger btn-sm">🗑️</a>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">💧</div>
+        <p>Bugün su kaydı yok</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

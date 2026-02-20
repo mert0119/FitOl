@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Hatırlatıcılar{% endblock %}
+{% block content %}
+<div class="page-header fade-in">
+    <h1>🔔 Hatırlatıcılar</h1>
+    <p>Önemli anlarını kaçırma — özel hatırlatıcılar oluştur</p>
+</div>
+
+<!-- Hatırlatıcı Ekleme -->
+<div class="card slide-up" style="margin-bottom:24px">
+    <div class="card-title">➕ Yeni Hatırlatıcı</div>
+    <form method="POST" action="{{ url_for('reminder.add') }}" style="margin-top:16px">
+        <div class="form-row">
+            <div class="form-group" style="flex:2">
+                <label class="form-label">Başlık</label>
+                <input type="text" name="title" class="form-input" placeholder="ör: Su iç!" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Saat</label>
+                <input type="time" name="reminder_time" class="form-input" value="08:00" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tekrar</label>
+                <select name="repeat_type" class="form-select">
+                    <option value="daily">Her gün</option>
+                    <option value="weekdays">Hafta içi</option>
+                    <option value="custom">Özel</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Mesaj (isteğe bağlı)</label>
+            <input type="text" name="message" class="form-input" placeholder="Hatırlatıcı detayı...">
+        </div>
+        <button type="submit" class="btn btn-primary">🔔 Ekle</button>
+    </form>
+</div>
+
+<!-- Hatırlatıcı Listesi -->
+<div class="card slide-up">
+    <div class="card-title" style="margin-bottom:16px">📋 Hatırlatıcılarım</div>
+    {% if reminders %}
+    {% for r in reminders %}
+    <div class="exercise-card" style="margin-bottom:8px;opacity:{{ '1' if r.is_active else '0.5' }}">
+        <div class="exercise-info">
+            <h4>
+                {% if r.is_active %}🔔{% else %}🔕{% endif %}
+                {{ r.title }}
+                <span style="font-size:13px;color:var(--accent-blue);font-weight:600;margin-left:8px">⏰ {{
+                    r.reminder_time }}</span>
+            </h4>
+            <div class="exercise-stats">
+                <span>
+                    {% if r.repeat_type == 'daily' %}📆 Her gün
+                    {% elif r.repeat_type == 'weekdays' %}📆 Hafta içi
+                    {% else %}📆 Özel
+                    {% endif %}
+                </span>
+                {% if r.message %}<span>💬 {{ r.message }}</span>{% endif %}
+            </div>
+        </div>
+        <div style="display:flex;gap:6px">
+            <a href="{{ url_for('reminder.toggle', id=r.id) }}" class="btn btn-secondary btn-sm"
+                title="{{ 'Pasif yap' if r.is_active else 'Aktif yap' }}">
+                {% if r.is_active %}⏸️{% else %}▶️{% endif %}
+            </a>
+            <a href="{{ url_for('reminder.delete', id=r.id) }}" class="btn btn-danger btn-sm"
+                onclick="return confirm('Silmek istediğinize emin misiniz?')">🗑️</a>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">🔔</div>
+        <p>Henüz hatırlatıcı yok</p>
+        <p style="font-size:14px;color:var(--text-muted)">İlk hatırlatıcını oluştur!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

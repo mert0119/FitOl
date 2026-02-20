@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Diyet Planları{% endblock %}
+{% block content %}
+<div class="page-header fade-in">
+    <h1>🥗 Diyet Planları</h1>
+    <p>Kişisel diyet planlarını oluştur ve yönet</p>
+</div>
+
+<div style="margin-bottom:20px">
+    <a href="{{ url_for('diet_plan.create') }}" class="btn btn-primary">➕ Yeni Plan Oluştur</a>
+</div>
+
+{% if plans %}
+{% for plan in plans %}
+<div class="plan-card slide-up {% if plan.is_active %}active{% endif %}">
+    {% if plan.is_active %}
+    <div class="plan-badge"><span class="badge badge-green">✅ Aktif</span></div>
+    {% endif %}
+    <div class="plan-header">
+        <h3>{{ plan.name }}</h3>
+        <p style="color:var(--text-secondary);font-size:13px">
+            {{ {'kilo_verme': '🔻 Kilo Verme', 'kilo_alma': '🔺 Kilo Alma', 'koruma': '⚖️ Kilo Koruma'}.get(plan.goal,
+            plan.goal) }}
+            · {{ plan.daily_calories }} kcal/gün
+        </p>
+    </div>
+
+    <div class="plan-macros">
+        <div class="macro-item">
+            <div class="macro-value" style="color:var(--accent-blue)">{{ plan.protein_grams() }}g</div>
+            <div class="macro-label">Protein (%{{ plan.protein_ratio | int }})</div>
+        </div>
+        <div class="macro-item">
+            <div class="macro-value" style="color:var(--accent-orange)">{{ plan.carb_grams() }}g</div>
+            <div class="macro-label">Karb (%{{ plan.carb_ratio | int }})</div>
+        </div>
+        <div class="macro-item">
+            <div class="macro-value" style="color:var(--accent-purple)">{{ plan.fat_grams() }}g</div>
+            <div class="macro-label">Yağ (%{{ plan.fat_ratio | int }})</div>
+        </div>
+    </div>
+
+    {% if plan.breakfast or plan.lunch or plan.dinner or plan.snacks %}
+    <div class="plan-meals">
+        {% if plan.breakfast %}<h4>🌅 Kahvaltı</h4>
+        <p>{{ plan.breakfast }}</p>{% endif %}
+        {% if plan.lunch %}<h4>☀️ Öğle</h4>
+        <p>{{ plan.lunch }}</p>{% endif %}
+        {% if plan.dinner %}<h4>🌙 Akşam</h4>
+        <p>{{ plan.dinner }}</p>{% endif %}
+        {% if plan.snacks %}<h4>🍎 Atıştırmalık</h4>
+        <p>{{ plan.snacks }}</p>{% endif %}
+    </div>
+    {% endif %}
+
+    <div class="btn-group" style="margin-top:16px">
+        {% if not plan.is_active %}
+        <a href="{{ url_for('diet_plan.activate', id=plan.id) }}" class="btn btn-primary btn-sm">Aktif Et</a>
+        {% endif %}
+        <a href="{{ url_for('diet_plan.delete', id=plan.id) }}" class="btn btn-danger btn-sm">🗑️ Sil</a>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="card">
+    <div class="empty-state">
+        <div class="empty-icon">🥗</div>
+        <p>Henüz diyet planı yok. Yeni bir plan oluşturun!</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

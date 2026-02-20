@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block title %}Egzersiz Takibi{% endblock %}
+{% block content %}
+<div class="page-header fade-in">
+    <h1>💪 Egzersiz Takibi</h1>
+    <p>Antrenmanını kaydet ve gelişimini takip et</p>
+</div>
+
+<!-- Tarih Seçici -->
+<div class="date-nav">
+    <input type="date" class="form-input" value="{{ selected_date.isoformat() }}"
+        onchange="location.href='/exercise?date=' + this.value" style="width:auto">
+    {% if selected_date != today %}
+    <a href="{{ url_for('exercise.log') }}" class="btn btn-secondary btn-sm">Bugün</a>
+    {% endif %}
+    <a href="{{ url_for('exercise.programs') }}" class="btn btn-secondary btn-sm">📋 Programlar</a>
+    <a href="{{ url_for('exercise.history') }}" class="btn btn-secondary btn-sm">📜 Geçmiş</a>
+</div>
+
+<!-- Günlük Toplam -->
+<div class="card slide-up" style="margin-bottom:20px">
+    <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+        <div>
+            <span style="font-size:28px;font-weight:800;color:var(--accent-orange)">🔥 {{ total_calories }}</span>
+            <span style="color:var(--text-secondary)"> kcal yakıldı</span>
+        </div>
+        <div>
+            <span style="font-size:28px;font-weight:800;color:var(--accent-blue)">⏱️ {{ total_duration }}</span>
+            <span style="color:var(--text-secondary)"> dakika</span>
+        </div>
+    </div>
+</div>
+
+<!-- Egzersiz Ekleme -->
+<div class="card slide-up" style="margin-bottom:20px">
+    <div class="card-title" style="margin-bottom:16px">➕ Egzersiz Ekle</div>
+
+    <!-- Egzersiz Kütüphanesi -->
+    <div style="margin-bottom:16px">
+        <label class="form-label">Kütüphaneden Seç</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+            {% for cat, cat_name in category_names.items() %}
+            <button type="button" class="tab" onclick="showExercises('{{ cat }}')">{{ cat_name }}</button>
+            {% endfor %}
+        </div>
+        <div id="exerciseList" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"></div>
+    </div>
+
+    <form method="POST" action="{{ url_for('exercise.add') }}">
+        <input type="hidden" name="date" value="{{ selected_date.isoformat() }}">
+        <div class="form-row">
+            <div class="form-group" style="flex:2">
+                <label class="form-label">Egzersiz Adı</label>
+                <input type="text" name="exercise_name" id="exerciseName" class="form-input" placeholder="Egzersiz adı"
+                    required>
+                <input type="hidden" name="category" id="exerciseCategory">
+            </div>
+        </div>
+
+        <!-- Ağırlık hareketleri alanları -->
+        <div id="strengthFields" class="form-row">
+            <div class="form-group">
+                <label class="form-label">Set</label>
+                <input type="number" name="sets" class="form-input" placeholder="3" min="0">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tekrar</label>
+                <input type="number" name="reps" class="form-input" placeholder="12" min="0">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Ağırlık (kg)</label>
+                <input type="number" name="weight_kg" class="form-input" placeholder="0" step="0.5" min="0">
+            </div>
+        </div>
+
+        <!-- Kardiyo alanları -->
+        <div id="cardioFields" class="form-row" style="display:none">
+            <div class="form-group">
+                <label class="form-label">Süre (dk)</label>
+                <input type="number" name="duration" class="form-input" placeholder="30" min="0">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Eğim (%)</label>
+                <input type="number" name="incline" class="form-input" placeholder="0" step="0.5" min="0" max="30">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Hız (km/h)</label>
+                <input type="number" name="speed" class="form-input" placeholder="0" step="0.5" min="0">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Not</label>
+            <input type="text" name="notes" class="form-input" placeholder="İsteğe bağlı not">
+        </div>
+        <button type="submit" class="btn btn-primary">✅ Ekle</button>
+    </form>
+</div>
+
+<!-- Günün Egzersizleri -->
+<div class="card slide-up">
+    <div class="card-title" style="margin-bottom:16px">📋 Günün Egzersizleri</div>
+    {% if logs %}
+    {% for log in logs %}
+    <div class="exercise-card" style="margin-bottom:8px">
+        <div class="exercise-info">
+            <h4>{{ log.exercise_name }}</h4>
+            <div class="exercise-stats">
+                {% if log.category in ('kardiyo', 'esneklik') %}
+                {% if log.duration %}<span>⏱️ {{ log.duration }}dk</span>{% endif %}
+                {% if log.incline %}<span>📐 %{{ log.incline }}</span>{% endif %}
+                {% if log.speed %}<span>🏃 {{ log.speed }}km/h</span>{% endif %}
+                {% else %}
+                {% if log.sets %}<span>{{ log.sets }}×{{ log.reps }}</span>{% endif %}
+                {% if log.weight_kg %}<span>🏋️ {{ log.weight_kg }}kg</span>{% endif %}
+                {% endif %}
+                <span>🔥 {{ log.calories_burned | round | int }} kcal</span>
+            </div>
+            {% if log.notes %}<div style="font-size:12px;color:var(--text-muted);margin-top:4px">{{ log.notes }}</div>{%
+            endif %}
+        </div>
+        <a href="{{ url_for('exercise.delete', id=log.id) }}" class="btn btn-danger btn-sm">🗑️</a>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">💪</div>
+        <p>Bugün henüz egzersiz kaydı yok</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    const exercises = {{ exercises | tojson }};
+    const cardioCategories = ['kardiyo', 'esneklik'];
+    let currentCategory = '';
+
+    function showExercises(category) {
+        currentCategory = category;
+        const list = document.getElementById('exerciseList');
+        const exList = exercises[category] || [];
+        list.innerHTML = exList.map(function (ex) {
+            return '<button type="button" class="btn btn-secondary btn-sm" onclick="selectExercise(\'' +
+                ex.name + '\', \'' + category + '\')">' + ex.name + '</button>';
+        }).join('');
+
+        // Kardiyo/ağırlık alanlarını değiştir
+        toggleFields(category);
+    }
+
+    function toggleFields(category) {
+        const strengthFields = document.getElementById('strengthFields');
+        const cardioFields = document.getElementById('cardioFields');
+        if (cardioCategories.includes(category)) {
+            strengthFields.style.display = 'none';
+            cardioFields.style.display = 'flex';
+        } else {
+            strengthFields.style.display = 'flex';
+            cardioFields.style.display = 'none';
+        }
+    }
+
+    // selectExercise'ı güncelle — kategoriyi de set etsin
+    const origSelectExercise = window.selectExercise;
+    window.selectExercise = function (name, category) {
+        document.getElementById('exerciseName').value = name;
+        document.getElementById('exerciseCategory').value = category;
+        toggleFields(category);
+    };
+</script>
+{% endblock %}

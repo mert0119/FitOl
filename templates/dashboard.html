@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Ana Panel{% endblock %}
+{% block content %}
+<div class="page-header fade-in">
+    <h1>Merhaba, {{ current_user.first_name or current_user.username }}! 👋</h1>
+    <p>{{ today.strftime('%d %B %Y') }} — Bugünkü özetin</p>
+</div>
+
+<div class="motivation-card slide-up">{{ motivation }}</div>
+
+<!-- Günlük Özet Kartları -->
+<div class="card-grid slide-up">
+    <div class="stat-card green">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-value">{{ daily_calories }}</div>
+        <div class="stat-label">Alınan Kalori</div>
+        <div class="stat-sub">Hedef: {{ current_user.daily_calorie_goal }} kcal</div>
+        <div class="progress-bar" style="margin-top:10px">
+            <div class="progress-fill"
+                style="width:{{ [daily_calories / current_user.daily_calorie_goal * 100, 100] | min }}%"></div>
+        </div>
+    </div>
+    <div class="stat-card blue">
+        <div class="stat-icon">💧</div>
+        <div class="stat-value">{{ daily_water_litre }}L</div>
+        <div class="stat-label">Su Tüketimi</div>
+        <div class="stat-sub">Hedef: {{ current_user.daily_water_goal }}L</div>
+        <div class="progress-bar" style="margin-top:10px">
+            <div class="progress-fill"
+                style="width:{{ [daily_water_ml / (current_user.daily_water_goal * 1000) * 100, 100] | min }}%;background:linear-gradient(135deg,#3b82f6,#8b5cf6)">
+            </div>
+        </div>
+    </div>
+    <div class="stat-card orange">
+        <div class="stat-icon">🏋️</div>
+        <div class="stat-value">{{ daily_exercise_cal }}</div>
+        <div class="stat-label">Yakılan Kalori</div>
+        <div class="stat-sub">{{ daily_exercise_min }} dakika egzersiz</div>
+    </div>
+    <div class="stat-card purple">
+        <div class="stat-icon">⚖️</div>
+        <div class="stat-value">{{ last_measurement.weight if last_measurement and last_measurement.weight else
+            (current_user.weight or '—') }}</div>
+        <div class="stat-label">Güncel Kilo (kg)</div>
+        <div class="stat-sub">Hedef: {{ current_user.target_weight or '—' }} kg</div>
+    </div>
+</div>
+
+<!-- Makro Besinler -->
+<div class="card slide-up" style="margin-bottom:24px">
+    <div class="card-title">📊 Günlük Makro Besinler</div>
+    <div class="macros-summary">
+        <div class="macro-bar protein">
+            <div class="value">{{ daily_protein }}g</div>
+            <div class="label">Protein</div>
+        </div>
+        <div class="macro-bar carbs">
+            <div class="value">{{ daily_carbs }}g</div>
+            <div class="label">Karbonhidrat</div>
+        </div>
+        <div class="macro-bar fat">
+            <div class="value">{{ daily_fat }}g</div>
+            <div class="label">Yağ</div>
+        </div>
+    </div>
+</div>
+
+<!-- Net Kalori -->
+<div class="card slide-up" style="margin-bottom:24px">
+    <div class="card-title">📉 Net Kalori</div>
+    <div style="text-align:center;padding:16px 0">
+        <span
+            style="font-size:40px;font-weight:800;color:{% if daily_calories - daily_exercise_cal <= (current_user.daily_calorie_goal or 2000) %}var(--accent-green){% else %}var(--accent-red){% endif %}">
+            {{ daily_calories - daily_exercise_cal }}
+        </span>
+        <div style="color:var(--text-secondary);font-size:13px;margin-top:4px">
+            {{ daily_calories }} alınan − {{ daily_exercise_cal }} yakılan = Net
+        </div>
+    </div>
+</div>
+
+<!-- Haftalık Grafik -->
+<div class="card slide-up">
+    <div class="card-title">📈 Son 7 Gün Kalori Trendi</div>
+    <div class="chart-container">
+        <canvas id="weeklyChart"></canvas>
+    </div>
+</div>
+
+<!-- Hızlı Erişim -->
+<div class="card-grid slide-up" style="margin-top:24px">
+    <a href="{{ url_for('food.log') }}" class="stat-card green" style="cursor:pointer;text-align:center">
+        <div class="stat-icon">🍽️</div>
+        <div class="stat-label" style="font-size:14px;font-weight:600;color:var(--text-primary)">Yemek Ekle</div>
+    </a>
+    <a href="{{ url_for('exercise.log') }}" class="stat-card blue" style="cursor:pointer;text-align:center">
+        <div class="stat-icon">💪</div>
+        <div class="stat-label" style="font-size:14px;font-weight:600;color:var(--text-primary)">Egzersiz Ekle</div>
+    </a>
+    <a href="{{ url_for('water.index') }}" class="stat-card orange" style="cursor:pointer;text-align:center">
+        <div class="stat-icon">💧</div>
+        <div class="stat-label" style="font-size:14px;font-weight:600;color:var(--text-primary)">Su Ekle</div>
+    </a>
+    <a href="{{ url_for('measurement.log') }}" class="stat-card purple" style="cursor:pointer;text-align:center">
+        <div class="stat-icon">📏</div>
+        <div class="stat-label" style="font-size:14px;font-weight:600;color:var(--text-primary)">Ölçüm Ekle</div>
+    </a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    initWeeklyChart({{ weekly_labels | tojson }}, {{ weekly_calories | tojson }});
+</script>
+{% endblock %}

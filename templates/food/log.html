@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Kalori Takibi{% endblock %}
+{% block content %}
+<div class="page-header fade-in">
+    <h1>🍽️ Kalori Takibi</h1>
+    <p>Günlük besin alımını kaydet ve takip et</p>
+</div>
+
+<!-- Tarih Seçici -->
+<div class="date-nav">
+    <a href="{{ url_for('food.log', date=(selected_date - import('datetime').timedelta(days=1)).isoformat()) if false else '#' }}"
+        class="btn btn-secondary btn-sm"
+        onclick="location.href='/food?date=' + new Date(new Date('{{ selected_date.isoformat() }}').getTime() - 86400000).toISOString().split('T')[0]; return false;">←</a>
+    <input type="date" class="form-input" value="{{ selected_date.isoformat() }}"
+        onchange="location.href='/food?date=' + this.value" style="width:auto">
+    <a href="#" class="btn btn-secondary btn-sm"
+        onclick="location.href='/food?date=' + new Date(new Date('{{ selected_date.isoformat() }}').getTime() + 86400000).toISOString().split('T')[0]; return false;">→</a>
+    {% if selected_date != today %}
+    <a href="{{ url_for('food.log') }}" class="btn btn-secondary btn-sm">Bugün</a>
+    {% endif %}
+</div>
+
+<!-- Günlük Toplam -->
+<div class="card slide-up" style="margin-bottom:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+        <div>
+            <span style="font-size:32px;font-weight:800">{{ totals.calories }}</span>
+            <span style="color:var(--text-secondary)"> / {{ current_user.daily_calorie_goal }} kcal</span>
+        </div>
+        <div class="macros-summary" style="margin:0">
+            <div class="macro-bar protein" style="padding:8px 12px">
+                <div class="value" style="font-size:16px">{{ totals.protein }}g</div>
+                <div class="label">Protein</div>
+            </div>
+            <div class="macro-bar carbs" style="padding:8px 12px">
+                <div class="value" style="font-size:16px">{{ totals.carbs }}g</div>
+                <div class="label">Karb</div>
+            </div>
+            <div class="macro-bar fat" style="padding:8px 12px">
+                <div class="value" style="font-size:16px">{{ totals.fat }}g</div>
+                <div class="label">Yağ</div>
+            </div>
+        </div>
+    </div>
+    <div class="progress-bar" style="margin-top:12px">
+        <div class="progress-fill"
+            style="width:{{ [totals.calories / current_user.daily_calorie_goal * 100, 100] | min }}%"></div>
+    </div>
+</div>
+
+<!-- Yemek Ekleme Formu -->
+<div class="card slide-up" style="margin-bottom:20px">
+    <div class="card-title" style="margin-bottom:16px">➕ Yemek Ekle</div>
+    <form method="POST" action="{{ url_for('food.add') }}">
+        <input type="hidden" name="date" value="{{ selected_date.isoformat() }}">
+        <div class="form-row">
+            <div class="form-group" style="flex:2;min-width:250px">
+                <label class="form-label">Yemek Ara veya Yaz</label>
+                <div class="search-container">
+                    <input type="text" id="foodSearch" class="form-input" placeholder="Yemek ara... (örn: tavuk, pilav)"
+                        autocomplete="off">
+                    <div id="searchResults" class="search-results"></div>
+                </div>
+                <input type="hidden" name="food_name" id="foodName">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Öğün</label>
+                <select name="meal_type" class="form-select">
+                    <option value="kahvalti">🌅 Kahvaltı</option>
+                    <option value="ogle">☀️ Öğle</option>
+                    <option value="aksam">🌙 Akşam</option>
+                    <option value="atistirmalik">🍎 Atıştırmalık</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">Porsiyon Tipi</label>
+                <select name="portion_type" id="portionType" class="form-select" onchange="updatePortionMultiplier()">
+                    <option value="tabak" data-multiplier="1">🍽️ Tabak (1 porsiyon)</option>
+                    <option value="kase" data-multiplier="0.75">🥣 Kase</option>
+                    <option value="bardak" data-multiplier="0.5">🥤 Bardak</option>
+                    <option value="kasik" data-multiplier="0.1">🥄 Kaşık</option>
+                    <option value="adet" data-multiplier="1">🔢 Adet</option>
+                    <option value="dilim" data-multiplier="0.3">🔪 Dilim</option>
+                    <option value="gram" data-multiplier="0.01">⚖️ Gram</option>
+                    <option value="olcek" data-multiplier="1">📏 Ölçek (scoop)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Miktar</label>
+                <input type="number" name="portion" id="portionAmount" class="form-input" value="1" min="0.1" step="0.1"
+                    oninput="updatePortionValues()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Kalori</label>
+                <input type="number" name="calories" id="foodCalories" class="form-input" placeholder="0" step="0.1">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Protein (g)</label>
+                <input type="number" name="protein" id="foodProtein" class="form-input" placeholder="0" step="0.1">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Karb (g)</label>
+                <input type="number" name="carbs" id="foodCarbs" class="form-input" placeholder="0" step="0.1">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Yağ (g)</label>
+                <input type="number" name="fat" id="foodFat" class="form-input" placeholder="0" step="0.1">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">✅ Ekle</button>
+    </form>
+</div>
+
+<!-- Öğün Listeleri -->
+{% for meal_type, items in meals.items() %}
+<div class="meal-section slide-up">
+    <div class="meal-header">
+        <span class="meal-title">{{ meal_names[meal_type] }}</span>
+        <span class="meal-calories">
+            {{ items | sum(attribute='calories') | round | int }} kcal
+        </span>
+    </div>
+    <div class="meal-body">
+        {% if items %}
+        {% for item in items %}
+        <div class="meal-item">
+            <div>
+                <div class="meal-item-name">{{ item.food_name }}</div>
+                <div class="meal-item-info">
+                    <span>{{ item.portion }}x</span>
+                    <span>P: {{ item.protein | round(1) }}g</span>
+                    <span>K: {{ item.carbs | round(1) }}g</span>
+                    <span>Y: {{ item.fat | round(1) }}g</span>
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+                <span style="font-weight:600;color:var(--accent-green)">{{ item.calories | round | int }} kcal</span>
+                <a href="{{ url_for('food.delete', id=item.id) }}" class="btn btn-danger btn-sm" title="Sil">🗑️</a>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state" style="padding:20px">
+            <p>Henüz kayıt yok</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+
+<div style="margin-top:16px">
+    <a href="{{ url_for('food.history') }}" class="btn btn-secondary">📋 Geçmiş Kayıtlar</a>
+</div>
+
+<script>
+    // Food search'te seçilen yemeğin adını hidden input'a yaz
+    const origSelect = window.selectFood;
+    window.selectFood = function (name, cal, pro, carb, fat) {
+        origSelect(name, cal, pro, carb, fat);
+        document.getElementById('foodSearch').value = name;
+    };
+    document.querySelector('form[action*="food/add"]').addEventListener('submit', function () {
+        const search = document.getElementById('foodSearch');
+        const hidden = document.getElementById('foodName');
+        if (!hidden.value && search.value) hidden.value = search.value;
+    });
+</script>
+{% endblock %}

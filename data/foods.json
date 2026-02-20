@@ -1,0 +1,914 @@
+[
+    {
+        "name": "Pilav",
+        "calories": 130,
+        "protein": 2.7,
+        "carbs": 28,
+        "fat": 0.3,
+        "unit": "100g"
+    },
+    {
+        "name": "Kuru Fasulye",
+        "calories": 127,
+        "protein": 8.7,
+        "carbs": 22,
+        "fat": 0.5,
+        "unit": "100g"
+    },
+    {
+        "name": "Mercimek Çorbası",
+        "calories": 140,
+        "protein": 9,
+        "carbs": 20,
+        "fat": 3,
+        "unit": "1 kase"
+    },
+    {
+        "name": "Tavuk Göğsü (Izgara)",
+        "calories": 165,
+        "protein": 31,
+        "carbs": 0,
+        "fat": 3.6,
+        "unit": "100g"
+    },
+    {
+        "name": "Yumurta (Haşlanmış)",
+        "calories": 78,
+        "protein": 6,
+        "carbs": 0.6,
+        "fat": 5,
+        "unit": "1 adet"
+    },
+    {
+        "name": "Ekmek (Beyaz)",
+        "calories": 265,
+        "protein": 9,
+        "carbs": 49,
+        "fat": 3.2,
+        "unit": "100g"
+    },
+    {
+        "name": "Ekmek (1 dilim)",
+        "calories": 80,
+        "protein": 2.7,
+        "carbs": 15,
+        "fat": 1,
+        "unit": "1 dilim"
+    },
+    {
+        "name": "Tam Buğday Ekmeği (1 dilim)",
+        "calories": 69,
+        "protein": 3.6,
+        "carbs": 12,
+        "fat": 1,
+        "unit": "1 dilim"
+    },
+    {
+        "name": "Yoğurt",
+        "calories": 63,
+        "protein": 5,
+        "carbs": 4.7,
+        "fat": 3.3,
+        "unit": "100g"
+    },
+    {
+        "name": "Süzme Peynir",
+        "calories": 98,
+        "protein": 11,
+        "carbs": 3.4,
+        "fat": 4.3,
+        "unit": "100g"
+    },
+    {
+        "name": "Beyaz Peynir",
+        "calories": 264,
+        "protein": 17,
+        "carbs": 1.3,
+        "fat": 21,
+        "unit": "100g"
+    },
+    {
+        "name": "Kaşar Peynir",
+        "calories": 350,
+        "protein": 25,
+        "carbs": 2.2,
+        "fat": 27,
+        "unit": "100g"
+    },
+    {
+        "name": "Zeytin (Siyah)",
+        "calories": 115,
+        "protein": 0.8,
+        "carbs": 6,
+        "fat": 11,
+        "unit": "100g"
+    },
+    {
+        "name": "Domates",
+        "calories": 18,
+        "protein": 0.9,
+        "carbs": 3.9,
+        "fat": 0.2,
+        "unit": "100g"
+    },
+    {
+        "name": "Salatalık",
+        "calories": 15,
+        "protein": 0.7,
+        "carbs": 3.6,
+        "fat": 0.1,
+        "unit": "100g"
+    },
+    {
+        "name": "Çay (Şekersiz)",
+        "calories": 2,
+        "protein": 0,
+        "carbs": 0.3,
+        "fat": 0,
+        "unit": "1 bardak"
+    },
+    {
+        "name": "Çay (Şekerli)",
+        "calories": 30,
+        "protein": 0,
+        "carbs": 7.5,
+        "fat": 0,
+        "unit": "1 bardak"
+    },
+    {
+        "name": "Türk Kahvesi",
+        "calories": 5,
+        "protein": 0.3,
+        "carbs": 0.8,
+        "fat": 0,
+        "unit": "1 fincan"
+    },
+    {
+        "name": "Süt (Tam Yağlı)",
+        "calories": 61,
+        "protein": 3.2,
+        "carbs": 4.8,
+        "fat": 3.3,
+        "unit": "100ml"
+    },
+    {
+        "name": "Ayran",
+        "calories": 36,
+        "protein": 1.7,
+        "carbs": 2.5,
+        "fat": 1.8,
+        "unit": "1 bardak"
+    },
+    {
+        "name": "Dana Kıyma",
+        "calories": 250,
+        "protein": 17,
+        "carbs": 0,
+        "fat": 20,
+        "unit": "100g"
+    },
+    {
+        "name": "Kuzu Eti",
+        "calories": 282,
+        "protein": 17,
+        "carbs": 0,
+        "fat": 23,
+        "unit": "100g"
+    },
+    {
+        "name": "Balık (Levrek)",
+        "calories": 97,
+        "protein": 18,
+        "carbs": 0,
+        "fat": 2.5,
+        "unit": "100g"
+    },
+    {
+        "name": "Balık (Somon)",
+        "calories": 208,
+        "protein": 20,
+        "carbs": 0,
+        "fat": 13,
+        "unit": "100g"
+    },
+    {
+        "name": "Ton Balığı (Konserve)",
+        "calories": 116,
+        "protein": 26,
+        "carbs": 0,
+        "fat": 0.8,
+        "unit": "100g"
+    },
+    {
+        "name": "Makarna (Pişmiş)",
+        "calories": 131,
+        "protein": 5,
+        "carbs": 25,
+        "fat": 1.1,
+        "unit": "100g"
+    },
+    {
+        "name": "Bulgur Pilavı",
+        "calories": 83,
+        "protein": 3,
+        "carbs": 18,
+        "fat": 0.2,
+        "unit": "100g"
+    },
+    {
+        "name": "Nohut",
+        "calories": 164,
+        "protein": 9,
+        "carbs": 27,
+        "fat": 2.6,
+        "unit": "100g"
+    },
+    {
+        "name": "Patates (Haşlanmış)",
+        "calories": 87,
+        "protein": 1.9,
+        "carbs": 20,
+        "fat": 0.1,
+        "unit": "100g"
+    },
+    {
+        "name": "Kızartma Patates",
+        "calories": 312,
+        "protein": 3.4,
+        "carbs": 41,
+        "fat": 15,
+        "unit": "100g"
+    },
+    {
+        "name": "Döner (Tavuk)",
+        "calories": 215,
+        "protein": 18,
+        "carbs": 12,
+        "fat": 11,
+        "unit": "100g"
+    },
+    {
+        "name": "Döner (Et)",
+        "calories": 250,
+        "protein": 17,
+        "carbs": 10,
+        "fat": 16,
+        "unit": "100g"
+    },
+    {
+        "name": "Lahmacun",
+        "calories": 270,
+        "protein": 10,
+        "carbs": 30,
+        "fat": 12,
+        "unit": "1 adet"
+    },
+    {
+        "name": "Pide (Kıymalı)",
+        "calories": 250,
+        "protein": 11,
+        "carbs": 28,
+        "fat": 10,
+        "unit": "1 dilim"
+    },
+    {
+        "name": "İskender Kebap",
+        "calories": 450,
+        "protein": 25,
+        "carbs": 35,
+        "fat": 22,
+        "unit": "1 porsiyon"
+    },
+    {
+        "name": "Adana Kebap",
+        "calories": 280,
+        "protein": 18,
+        "carbs": 2,
+        "fat": 22,
+        "unit": "1 porsiyon"
+    },
+    {
+        "name": "Köfte (Izgara)",
+        "calories": 220,
+        "protein": 17,
+        "carbs": 5,
+        "fat": 15,
+        "unit": "100g"
+    },
+    {
+        "name": "Mantı",
+        "calories": 200,
+        "protein": 8,
+        "carbs": 25,
+        "fat": 8,
+        "unit": "1 porsiyon"
+    },
+    {
+        "name": "Börek (Peynirli)",
+        "calories": 300,
+        "protein": 9,
+        "carbs": 30,
+        "fat": 16,
+        "unit": "1 dilim"
+    },
+    {
+        "name": "Simit",
+        "calories": 280,
+        "protein": 8,
+        "carbs": 52,
+        "fat": 4,
+        "unit": "1 adet"
+    },
+    {
+        "name": "Poğaça",
+        "calories": 250,
+        "protein": 5,
+        "carbs": 28,
+        "fat": 13,
+        "unit": "1 adet"
+    },
+    {
+        "name": "Baklava",
+        "calories": 334,
+        "protein": 6,
+        "carbs": 35,
+        "fat": 20,
+        "unit": "1 dilim"
+    },
+    {
+        "name": "Sütlaç",
+        "calories": 130,
+        "protein": 3,
+        "carbs": 22,
+        "fat": 3,
+        "unit": "1 kase"
+    },
+    {
+        "name": "Muz",
+        "calories": 89,
+        "protein": 1.1,
+        "carbs": 23,
+        "fat": 0.3,
+        "unit": "1 adet"
+    },
+    {
+        "name": "Elma",
+        "calories": 52,
+        "protein": 0.3,
+        "carbs": 14,
+        "fat": 0.2,
+        "unit": "1 adet"
+    },
+    {
+        "name": "Portakal",
+        "calories": 47,
+        "protein": 0.9,
+        "carbs": 12,
+        "fat": 0.1,
+        "unit": "1 adet"
+    },
+    {
+        "name": "Üzüm",
+        "calories": 69,
+        "protein": 0.7,
+        "carbs": 18,
+        "fat": 0.2,
+        "unit": "100g"
+    },
+    {
+        "name": "Ceviz",
+        "calories": 654,
+        "protein": 15,
+        "carbs": 14,
+        "fat": 65,
+        "unit": "100g"
+    },
+    {
+        "name": "Badem",
+        "calories": 579,
+        "protein": 21,
+        "carbs": 22,
+        "fat": 50,
+        "unit": "100g"
+    },
+    {
+        "name": "Fındık",
+        "calories": 628,
+        "protein": 15,
+        "carbs": 17,
+        "fat": 61,
+        "unit": "100g"
+    },
+    {
+        "name": "Zeytinyağı",
+        "calories": 884,
+        "protein": 0,
+        "carbs": 0,
+        "fat": 100,
+        "unit": "100ml"
+    },
+    {
+        "name": "Tereyağı",
+        "calories": 717,
+        "protein": 0.9,
+        "carbs": 0.1,
+        "fat": 81,
+        "unit": "100g"
+    },
+    {
+        "name": "Bal",
+        "calories": 304,
+        "protein": 0.3,
+        "carbs": 82,
+        "fat": 0,
+        "unit": "100g"
+    },
+    {
+        "name": "Protein Tozu (Whey)",
+        "calories": 120,
+        "protein": 24,
+        "carbs": 3,
+        "fat": 1.5,
+        "unit": "1 ölçek"
+    },
+    {
+        "name": "Yulaf Ezmesi",
+        "calories": 389,
+        "protein": 17,
+        "carbs": 66,
+        "fat": 7,
+        "unit": "100g"
+    },
+    {
+        "name": "Pirinç",
+        "calories": 130,
+        "protein": 2.4,
+        "carbs": 28,
+        "fat": 0.2,
+        "unit": "100g pişmiş"
+    },
+    {
+        "name": "Fasulye Yemeği",
+        "calories": 95,
+        "protein": 5,
+        "carbs": 12,
+        "fat": 3,
+        "unit": "1 porsiyon"
+    },
+    {
+        "name": "Ispanak Yemeği",
+        "calories": 75,
+        "protein": 4,
+        "carbs": 6,
+        "fat": 4,
+        "unit": "1 porsiyon"
+    },
+    {
+        "name": "Karnıyarık",
+        "calories": 200,
+        "protein": 8,
+        "carbs": 15,
+        "fat": 12,
+        "unit": "1 adet"
+    },
+    {
+        "name": "İmam Bayıldı",
+        "calories": 150,
+        "protein": 3,
+        "carbs": 12,
+        "fat": 10,
+        "unit": "1 adet"
+    },
+    {
+        "name": "Çoban Salatası",
+        "calories": 60,
+        "protein": 1,
+        "carbs": 5,
+        "fat": 4,
+        "unit": "1 porsiyon"
+    },
+    {
+        "name": "Cacık",
+        "calories": 35,
+        "protein": 2,
+        "carbs": 3,
+        "fat": 1.5,
+        "unit": "1 kase"
+    },
+    {
+        "name": "Humus",
+        "calories": 166,
+        "protein": 8,
+        "carbs": 14,
+        "fat": 10,
+        "unit": "100g"
+    },
+    {
+        "name": "Menemen",
+        "calories": 180,
+        "protein": 10,
+        "carbs": 8,
+        "fat": 12,
+        "unit": "1 porsiyon"
+    },
+    {
+        "name": "Omlet (2 yumurta)",
+        "calories": 180,
+        "protein": 12,
+        "carbs": 1,
+        "fat": 14,
+        "unit": "1 porsiyon"
+    },
+    {
+        "name": "Tost (Kaşarlı)",
+        "calories": 320,
+        "protein": 14,
+        "carbs": 30,
+        "fat": 16,
+        "unit": "1 adet"
+    },
+    {
+        "name": "Hamburger",
+        "calories": 450,
+        "protein": 22,
+        "carbs": 35,
+        "fat": 25,
+        "unit": "1 adet"
+    },
+    {
+        "name": "Pizza (1 dilim)",
+        "calories": 285,
+        "protein": 12,
+        "carbs": 36,
+        "fat": 10,
+        "unit": "1 dilim"
+    },
+    {
+        "name": "Tavuk Sote",
+        "calories": 180,
+        "protein": 22,
+        "carbs": 8,
+        "fat": 7,
+        "unit": "1 porsiyon"
+    },
+    {
+        "name": "Et Sote",
+        "calories": 250,
+        "protein": 20,
+        "carbs": 8,
+        "fat": 15,
+        "unit": "1 porsiyon"
+    },
+    {
+        "name": "Mercimek Köftesi",
+        "calories": 160,
+        "protein": 6,
+        "carbs": 25,
+        "fat": 4,
+        "unit": "100g"
+    },
+    {
+        "name": "Dolma (Yaprak)",
+        "calories": 210,
+        "protein": 4,
+        "carbs": 22,
+        "fat": 12,
+        "unit": "1 porsiyon"
+    },
+    {
+        "name": "Patlıcan Musakka",
+        "calories": 180,
+        "protein": 8,
+        "carbs": 12,
+        "fat": 11,
+        "unit": "1 porsiyon"
+    },
+    {
+        "name": "Çorba (Ezogelin)",
+        "calories": 120,
+        "protein": 5,
+        "carbs": 18,
+        "fat": 3,
+        "unit": "1 kase"
+    },
+    {
+        "name": "Çorba (Tarhana)",
+        "calories": 100,
+        "protein": 3,
+        "carbs": 16,
+        "fat": 2.5,
+        "unit": "1 kase"
+    },
+    {
+        "name": "Çorba (Domates)",
+        "calories": 90,
+        "protein": 2,
+        "carbs": 14,
+        "fat": 3,
+        "unit": "1 kase"
+    },
+    {
+        "name": "Pirzola (Kuzu)",
+        "calories": 300,
+        "protein": 22,
+        "carbs": 0,
+        "fat": 23,
+        "unit": "1 porsiyon"
+    },
+    {
+        "name": "Avokado",
+        "calories": 160,
+        "protein": 2,
+        "carbs": 9,
+        "fat": 15,
+        "unit": "1 adet"
+    },
+    {
+        "name": "Yaban Mersini",
+        "calories": 57,
+        "protein": 0.7,
+        "carbs": 14,
+        "fat": 0.3,
+        "unit": "100g"
+    },
+    {
+        "name": "Çilek",
+        "calories": 32,
+        "protein": 0.7,
+        "carbs": 7.7,
+        "fat": 0.3,
+        "unit": "100g"
+    },
+    {
+        "name": "Karpuz",
+        "calories": 30,
+        "protein": 0.6,
+        "carbs": 7.6,
+        "fat": 0.2,
+        "unit": "100g"
+    },
+    {
+        "name": "Roka",
+        "calories": 25,
+        "protein": 2.6,
+        "carbs": 3.7,
+        "fat": 0.7,
+        "unit": "100g"
+    },
+    {
+        "name": "Semizotu",
+        "calories": 20,
+        "protein": 2,
+        "carbs": 3.4,
+        "fat": 0.4,
+        "unit": "100g"
+    },
+    {
+        "name": "Maydanoz",
+        "calories": 36,
+        "protein": 3,
+        "carbs": 6.3,
+        "fat": 0.8,
+        "unit": "100g"
+    },
+    {
+        "name": "Dereotu",
+        "calories": 43,
+        "protein": 3.5,
+        "carbs": 7,
+        "fat": 1.1,
+        "unit": "100g"
+    },
+    {
+        "name": "Ispanak (Çiğ)",
+        "calories": 23,
+        "protein": 2.9,
+        "carbs": 3.6,
+        "fat": 0.4,
+        "unit": "100g"
+    },
+    {
+        "name": "Brokoli",
+        "calories": 34,
+        "protein": 2.8,
+        "carbs": 7,
+        "fat": 0.4,
+        "unit": "100g"
+    },
+    {
+        "name": "Karnabahar",
+        "calories": 25,
+        "protein": 1.9,
+        "carbs": 5,
+        "fat": 0.3,
+        "unit": "100g"
+    },
+    {
+        "name": "Kuşkonmaz",
+        "calories": 20,
+        "protein": 2.2,
+        "carbs": 3.9,
+        "fat": 0.1,
+        "unit": "100g"
+    },
+    {
+        "name": "Kale (Karalahana)",
+        "calories": 49,
+        "protein": 4.3,
+        "carbs": 9,
+        "fat": 0.9,
+        "unit": "100g"
+    },
+    {
+        "name": "Taze Nane",
+        "calories": 44,
+        "protein": 3.3,
+        "carbs": 8.4,
+        "fat": 0.7,
+        "unit": "100g"
+    },
+    {
+        "name": "Taze Fesleğen",
+        "calories": 23,
+        "protein": 3.2,
+        "carbs": 2.7,
+        "fat": 0.6,
+        "unit": "100g"
+    },
+    {
+        "name": "Kereviz Sapı",
+        "calories": 16,
+        "protein": 0.7,
+        "carbs": 3,
+        "fat": 0.2,
+        "unit": "100g"
+    },
+    {
+        "name": "Marul",
+        "calories": 15,
+        "protein": 1.4,
+        "carbs": 2.9,
+        "fat": 0.2,
+        "unit": "100g"
+    },
+    {
+        "name": "Protein Tozu (Casein)",
+        "calories": 110,
+        "protein": 23,
+        "carbs": 4,
+        "fat": 1,
+        "unit": "1 ölçek"
+    },
+    {
+        "name": "Protein Tozu (İzolat)",
+        "calories": 100,
+        "protein": 25,
+        "carbs": 1,
+        "fat": 0.5,
+        "unit": "1 ölçek"
+    },
+    {
+        "name": "Protein Bar",
+        "calories": 200,
+        "protein": 20,
+        "carbs": 22,
+        "fat": 7,
+        "unit": "1 adet"
+    },
+    {
+        "name": "Kreatin (Monohydrate)",
+        "calories": 0,
+        "protein": 0,
+        "carbs": 0,
+        "fat": 0,
+        "unit": "5g (1 ölçek)"
+    },
+    {
+        "name": "BCAA",
+        "calories": 5,
+        "protein": 0,
+        "carbs": 1,
+        "fat": 0,
+        "unit": "1 ölçek"
+    },
+    {
+        "name": "Glutamin",
+        "calories": 20,
+        "protein": 5,
+        "carbs": 0,
+        "fat": 0,
+        "unit": "1 ölçek (5g)"
+    },
+    {
+        "name": "Chia Tohumu",
+        "calories": 486,
+        "protein": 17,
+        "carbs": 42,
+        "fat": 31,
+        "unit": "100g"
+    },
+    {
+        "name": "Keten Tohumu",
+        "calories": 534,
+        "protein": 18,
+        "carbs": 29,
+        "fat": 42,
+        "unit": "100g"
+    },
+    {
+        "name": "Kinoa (Pişmiş)",
+        "calories": 120,
+        "protein": 4.4,
+        "carbs": 21,
+        "fat": 1.9,
+        "unit": "100g"
+    },
+    {
+        "name": "Fıstık Ezmesi",
+        "calories": 588,
+        "protein": 25,
+        "carbs": 20,
+        "fat": 50,
+        "unit": "100g"
+    },
+    {
+        "name": "Badem Ezmesi",
+        "calories": 614,
+        "protein": 21,
+        "carbs": 19,
+        "fat": 56,
+        "unit": "100g"
+    },
+    {
+        "name": "Hindistan Cevizi Yağı",
+        "calories": 862,
+        "protein": 0,
+        "carbs": 0,
+        "fat": 100,
+        "unit": "100ml"
+    },
+    {
+        "name": "Yeşil Çay",
+        "calories": 1,
+        "protein": 0,
+        "carbs": 0.2,
+        "fat": 0,
+        "unit": "1 bardak"
+    },
+    {
+        "name": "Türk Yoğurdu (Süzme)",
+        "calories": 59,
+        "protein": 10,
+        "carbs": 3.6,
+        "fat": 0.7,
+        "unit": "100g"
+    },
+    {
+        "name": "Lor Peyniri",
+        "calories": 71,
+        "protein": 11,
+        "carbs": 2.7,
+        "fat": 1.8,
+        "unit": "100g"
+    },
+    {
+        "name": "Yumurta Akı",
+        "calories": 17,
+        "protein": 3.6,
+        "carbs": 0.2,
+        "fat": 0.1,
+        "unit": "1 adet"
+    },
+    {
+        "name": "Hindi Göğsü",
+        "calories": 135,
+        "protein": 30,
+        "carbs": 0,
+        "fat": 1.5,
+        "unit": "100g"
+    },
+    {
+        "name": "Tatlı Patates",
+        "calories": 86,
+        "protein": 1.6,
+        "carbs": 20,
+        "fat": 0.1,
+        "unit": "100g"
+    },
+    {
+        "name": "Pirinç Patlağı",
+        "calories": 387,
+        "protein": 7,
+        "carbs": 82,
+        "fat": 2.8,
+        "unit": "100g"
+    },
+    {
+        "name": "Smoothie (Muz-Protein)",
+        "calories": 250,
+        "protein": 28,
+        "carbs": 30,
+        "fat": 3,
+        "unit": "1 bardak"
+    }
+]

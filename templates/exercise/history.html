@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Egzersiz Geçmişi{% endblock %}
+{% block content %}
+<div class="page-header fade-in">
+    <h1>📜 Egzersiz Geçmişi</h1>
+</div>
+<div class="card slide-up">
+    {% if logs.items %}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Tarih</th>
+                    <th>Egzersiz</th>
+                    <th>Süre</th>
+                    <th>Set×Tekrar</th>
+                    <th>Ağırlık</th>
+                    <th>Kalori</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs.items %}
+                <tr>
+                    <td>{{ log.date.strftime('%d/%m/%Y') }}</td>
+                    <td><strong>{{ log.exercise_name }}</strong></td>
+                    <td>{{ log.duration }}dk</td>
+                    <td>{{ log.sets }}×{{ log.reps }}</td>
+                    <td>{{ log.weight_kg }}kg</td>
+                    <td style="color:var(--accent-orange)">{{ log.calories_burned | round | int }} kcal</td>
+                    <td><a href="{{ url_for('exercise.delete', id=log.id) }}" class="btn btn-danger btn-sm">🗑️</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination">
+        {% if logs.has_prev %}<a href="{{ url_for('exercise.history', page=logs.prev_num) }}">← Önceki</a>{% endif %}
+        <span class="current">{{ logs.page }} / {{ logs.pages }}</span>
+        {% if logs.has_next %}<a href="{{ url_for('exercise.history', page=logs.next_num) }}">Sonraki →</a>{% endif %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">💪</div>
+        <p>Henüz egzersiz kaydı yok</p>
+    </div>
+    {% endif %}
+</div>
+<div style="margin-top:16px"><a href="{{ url_for('exercise.log') }}" class="btn btn-primary">← Egzersiz Takibine Dön</a>
+</div>
+{% endblock %}

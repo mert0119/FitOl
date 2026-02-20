@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FitOl{% endblock %} — Spor & Diyet Takip</title>
+    <meta name="description"
+        content="Kapsamlı spor ve diyet takip uygulaması. Kalori, egzersiz, su ve vücut ölçümlerini takip edin.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#fbbf24">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    {% if current_user.is_authenticated %}
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">🏋️</span>
+                <span class="logo-text">FitOl</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">☰</button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('dashboard.index') }}"
+                class="nav-item {% if request.endpoint == 'dashboard.index' %}active{% endif %}">
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">Ana Panel</span>
+            </a>
+            <a href="{{ url_for('food.log') }}" class="nav-item {% if request.blueprint == 'food' %}active{% endif %}">
+                <span class="nav-icon">🍽️</span>
+                <span class="nav-text">Kalori Takibi</span>
+            </a>
+            <a href="{{ url_for('exercise.log') }}"
+                class="nav-item {% if request.blueprint == 'exercise' %}active{% endif %}">
+                <span class="nav-icon">💪</span>
+                <span class="nav-text">Egzersiz</span>
+            </a>
+            <a href="{{ url_for('water.index') }}"
+                class="nav-item {% if request.blueprint == 'water' %}active{% endif %}">
+                <span class="nav-icon">💧</span>
+                <span class="nav-text">Su Takibi</span>
+            </a>
+            <a href="{{ url_for('measurement.log') }}"
+                class="nav-item {% if request.blueprint == 'measurement' %}active{% endif %}">
+                <span class="nav-icon">📏</span>
+                <span class="nav-text">Ölçümler</span>
+            </a>
+            <a href="{{ url_for('diet_plan.index') }}"
+                class="nav-item {% if request.blueprint == 'diet_plan' %}active{% endif %}">
+                <span class="nav-icon">🥗</span>
+                <span class="nav-text">Diyet Planı</span>
+            </a>
+            <a href="{{ url_for('progress.index') }}"
+                class="nav-item {% if request.blueprint == 'progress' %}active{% endif %}">
+                <span class="nav-icon">📸</span>
+                <span class="nav-text">İlerleme</span>
+            </a>
+            <a href="{{ url_for('ai_suggest.suggest') }}"
+                class="nav-item {% if request.blueprint == 'ai_suggest' %}active{% endif %}">
+                <span class="nav-icon">🤖</span>
+                <span class="nav-text">AI Öneri</span>
+            </a>
+            <a href="{{ url_for('reminder.index') }}"
+                class="nav-item {% if request.blueprint == 'reminder' %}active{% endif %}">
+                <span class="nav-icon">🔔</span>
+                <span class="nav-text">Hatırlatıcı</span>
+            </a>
+            <a href="{{ url_for('barcode.scan') }}"
+                class="nav-item {% if request.blueprint == 'barcode' %}active{% endif %}">
+                <span class="nav-icon">📷</span>
+                <span class="nav-text">Barkod Tara</span>
+            </a>
+            <a href="{{ url_for('food_photo.index') }}"
+                class="nav-item {% if request.blueprint == 'food_photo' %}active{% endif %}">
+                <span class="nav-icon">🧠</span>
+                <span class="nav-text">AI Yemek Tanı</span>
+            </a>
+            <a href="{{ url_for('calculator.index') }}"
+                class="nav-item {% if request.blueprint == 'calculator' %}active{% endif %}">
+                <span class="nav-icon">🧮</span>
+                <span class="nav-text">Hesaplayıcı</span>
+            </a>
+            <a href="{{ url_for('reports.index') }}"
+                class="nav-item {% if request.blueprint == 'reports' %}active{% endif %}">
+                <span class="nav-icon">📈</span>
+                <span class="nav-text">Raporlar</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('profile.view') }}"
+                class="nav-item {% if request.blueprint == 'profile' %}active{% endif %}">
+                {% if current_user.profile_photo %}
+                <img src="{{ url_for('static', filename=current_user.profile_photo) }}"
+                    style="width:24px;height:24px;border-radius:50%;object-fit:cover">
+                {% else %}
+                <span class="nav-icon">👤</span>
+                {% endif %}
+                <span class="nav-text">{{ current_user.username }}</span>
+            </a>
+            <a href="{{ url_for('auth.logout') }}" class="nav-item logout-btn">
+                <span class="nav-icon">🚪</span>
+                <span class="nav-text">Çıkış</span>
+            </a>
+        </div>
+    </aside>
+    {% endif %}
+
+    <main class="main-content {% if not current_user.is_authenticated %}full-width{% endif %}">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">
+                {{ message }}
+                <button class="flash-close" onclick="this.parentElement.remove()">×</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                .then(reg => console.log('SW registered:', reg.scope))
+                .catch(err => console.log('SW failed:', err));
+        }
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>
