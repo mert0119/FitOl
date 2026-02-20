@@ -132,12 +132,93 @@
         {% block content %}{% endblock %}
     </main>
 
+    {% if current_user.is_authenticated %}
+    <!-- Mobil Alt Navigasyon -->
+    <nav class="mobile-bottom-nav">
+        <a href="{{ url_for('dashboard.index') }}"
+            class="bottom-nav-item {% if request.endpoint == 'dashboard.index' %}active{% endif %}">
+            <span class="bottom-nav-icon">📊</span>
+            <span class="bottom-nav-label">Panel</span>
+        </a>
+        <a href="{{ url_for('food.log') }}"
+            class="bottom-nav-item {% if request.blueprint == 'food' %}active{% endif %}">
+            <span class="bottom-nav-icon">🍽️</span>
+            <span class="bottom-nav-label">Yemek</span>
+        </a>
+        <a href="{{ url_for('exercise.log') }}"
+            class="bottom-nav-item {% if request.blueprint == 'exercise' %}active{% endif %}">
+            <span class="bottom-nav-icon">💪</span>
+            <span class="bottom-nav-label">Egzersiz</span>
+        </a>
+        <a href="{{ url_for('water.index') }}"
+            class="bottom-nav-item {% if request.blueprint == 'water' %}active{% endif %}">
+            <span class="bottom-nav-icon">💧</span>
+            <span class="bottom-nav-label">Su</span>
+        </a>
+        <a href="#" class="bottom-nav-item" onclick="toggleMobileMenu(event)">
+            <span class="bottom-nav-icon">☰</span>
+            <span class="bottom-nav-label">Menü</span>
+        </a>
+    </nav>
+
+    <!-- Mobil Tam Menü -->
+    <div class="mobile-full-menu" id="mobileFullMenu">
+        <div class="mobile-menu-header">
+            <h3>🏋️ FitOl Menü</h3>
+            <button onclick="closeMobileMenu()" class="mobile-menu-close">✕</button>
+        </div>
+        <div class="mobile-menu-grid">
+            <a href="{{ url_for('measurement.log') }}" class="mobile-menu-item">
+                <span>📏</span><span>Ölçümler</span>
+            </a>
+            <a href="{{ url_for('diet_plan.index') }}" class="mobile-menu-item">
+                <span>🥗</span><span>Diyet Planı</span>
+            </a>
+            <a href="{{ url_for('progress.index') }}" class="mobile-menu-item">
+                <span>📸</span><span>İlerleme</span>
+            </a>
+            <a href="{{ url_for('ai_suggest.suggest') }}" class="mobile-menu-item">
+                <span>🤖</span><span>AI Öneri</span>
+            </a>
+            <a href="{{ url_for('reminder.index') }}" class="mobile-menu-item">
+                <span>🔔</span><span>Hatırlatıcı</span>
+            </a>
+            <a href="{{ url_for('barcode.scan') }}" class="mobile-menu-item">
+                <span>📷</span><span>Barkod Tara</span>
+            </a>
+            <a href="{{ url_for('food_photo.index') }}" class="mobile-menu-item">
+                <span>🧠</span><span>AI Yemek</span>
+            </a>
+            <a href="{{ url_for('calculator.index') }}" class="mobile-menu-item">
+                <span>🧮</span><span>Hesaplayıcı</span>
+            </a>
+            <a href="{{ url_for('reports.index') }}" class="mobile-menu-item">
+                <span>📈</span><span>Raporlar</span>
+            </a>
+            <a href="{{ url_for('profile.view') }}" class="mobile-menu-item">
+                <span>👤</span><span>Profil</span>
+            </a>
+            <a href="{{ url_for('auth.logout') }}" class="mobile-menu-item" style="color:#ef4444">
+                <span>🚪</span><span>Çıkış</span>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js', { scope: '/' })
                 .then(reg => console.log('SW registered:', reg.scope))
                 .catch(err => console.log('SW failed:', err));
+        }
+
+        function toggleMobileMenu(e) {
+            e.preventDefault();
+            document.getElementById('mobileFullMenu').classList.toggle('open');
+        }
+        function closeMobileMenu() {
+            document.getElementById('mobileFullMenu').classList.remove('open');
         }
     </script>
     {% block scripts %}{% endblock %}
