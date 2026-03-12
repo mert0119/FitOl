@@ -1,6 +1,6 @@
 import os
 import sys
-from flask import Flask, send_from_directory, jsonify
+from flask import Flask, send_from_directory,jsonify
 from flask_login import LoginManager
 from config import Config
 from models import db
