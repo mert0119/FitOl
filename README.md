@@ -1,5 +1,5 @@
 # FitOl - Fitness & Diyet Takip
-
+ 
 Kişisel fitness ve diyet takip uygulaması. AI destekli yemek tanıma, barkod tarama, kalori ve makro takibi.
 
 ## Özellikler
